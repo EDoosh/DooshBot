@@ -9,10 +9,11 @@ const fs = require('fs');
 // https://discordapp.com/oauth2/authorize?client_id=619532419061514240&scope=bot&permissions=8
 
 // Startup variables
-const token = fs.readFileSync('token.txt').toString(); // DO NOT LEAK
-const NAME = 'DooshBot';
-const VERSION = 'Alpha 0.3.0';
+const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
+const NAME = 'DooshBot'; // Set name in case I wan't to change it later
+const VERSION = 'Alpha 0.4.0'; // Same with version. 
 
+// Default settings. 
 let prefix = "-=";
 let adminrole = [];
 let modrole = [];
@@ -48,6 +49,10 @@ bot.on('message', async message => {
 		let fprefix = await db.fetch(`prefix_${message.guild.id}`);
 		if (fprefix === null) prefix = "-=";
 		else prefix = fprefix;
+
+		if(message.content === 'getdbprefix') return message.channel.send(`The current DooshBot prefix is \`${prefix}\``); // If the user wants the prefix, give it to them dammit!		
+		if(!message.content.startsWith(prefix) || message.author.bot == true) return;    // If message didn't start with the prefix or was sent by a bot, dont run next code
+		// GET THE SETTINGS FROM THE DATABASE ABOUT THE SERVER
 		//   Adminrole
 		let fadmrole = await db.get(`adminrole_${message.guild.id}`);
 		if (fadmrole != null) adminrole = fadmrole;
@@ -89,8 +94,6 @@ bot.on('message', async message => {
 
 		// Create arguments
 		const args = message.content.substring(prefix.length).split(' ');    // Create arguments array by cutting off the prefix then seperating the arguments into indexes by spaces
-		if(message.content === 'getdbprefix') return message.channel.send(`The current DooshBot prefix is \`${prefix}\``); // If the user wants the prefix, give it to them dammit!		
-		if(!message.content.startsWith(prefix) || message.author.bot == true) return;    // If message didn't start with the prefix or was sent by a bot, dont run next code
 		var cmd = bot.commands.get(args[0])    // Set cmd to the command to run it later if it exists in the Discord 'bot.commands' Collection we set earlier
 		// Run the command with the prefix located in Discord Bot/commands if it exists.
 		if(cmd) cmd.run(bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime);

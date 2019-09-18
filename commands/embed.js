@@ -2,36 +2,25 @@ const Discord = require('discord.js');
 const db = require('quick.db');
 
 module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime) => {
-    // let cmdembed = new Discord.RichEmbed()
-    //     .addField('This is a field!', 'This is a value in a field')
-    //     .setImage('https://cdn.discordapp.com/attachments/619704310615506957/623366396499197972/setimage.png')
-    //     .addBlankField()
-    //     .setAuthor('This is the Author', message.author.avatarURL)
-    //     .setColor(0xd307de)
-    //     .setDescription('This is a description!')
-    //     .setFooter('This is a footer!', 'https://cdn.discordapp.com/attachments/619704310615506957/623366394574143501/setFooter.png')
-    //     .setThumbnail('https://cdn.discordapp.com/attachments/619704310615506957/623366397249978378/setthumbnail.png')
-    //     .setTimestamp(Date.now())
-    //     .setTitle('This is a title')
-    //     .setURL('https://cdn.discordapp.com/attachments/619704310615506957/623366403533045760/setURL.png');
-    // message.channel.send(cmdembed)
-
-    //   F - Field
-    //   I - Image
-    //   B - Blank Field
-    //   A - Author
-    //   C - Colour
-    //   D - Description
-    //   L - Footer
-    // P - Thumbnail
-    //   E - Time
+    // A - Author
     // T - Title
     // U - URL
+    // D - Description
+    // P - Thumbnail
+    // F - Field
+    // B - Blank Field
+    // I - Image
+    // L - Footer
+    // E - Time
+    // C - Colour
+
+    // Check if issuer has mod permission
     if(!hasMod && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
-    if(!args[1]){
-        message.channel.send('The embed command help has been sent to your DMs.')
-        const dmto = bot.users.get(message.author.id)
-        let embedhelp = new Discord.RichEmbed()
+    if(!args[1] || args[1] === 'help'){ // Check if there is any first argument or if first argument is help
+        let dmto = '' // Set the place to DM to to blank
+        if(!args[1]) dmto = bot.users.get(message.author.id) // If there is no first arg, set dmto to the user
+        else dmto = message.channel // If there is a first arg, set dmto to the channel it was sent in.
+        let embedhelp = new Discord.RichEmbed() // Create embed with below things.
             .setColor(0x32fc51)
             .setTitle(`${prefix}embed Command Help`)
             .setDescription('Because this command is kinda tricky')
@@ -51,21 +40,27 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             .addField('-T (Title)', '[R] Title - The title of the embed.')
             .addField('-U (Title URL)', '[R] Title URL - A URL displayed in the title to direct you to when clicked on.', true)
             .setFooter('Any further questions? Ask EDoosh#9599!')
-        dmto.send(embedhelp)
-        return
+        dmto.send(embedhelp).then(() => { // Attempts to send to dmto.
+            if(!args[1]) message.channel.send('The embed command help has been sent to your DMs.') // If no first argument, say its been sent to DMs
+        }).catch(() => { // If there was an issue, e.g. the DMs were disabled, send message into command's channel
+            message.channel.send(`There was an issue sending to your DMs. Maybe you have DM's disabled? Use '${prefix}embed help' to send in the channel.`)
+        })
+        return // Dont continue down the rest of the code. Exit the command.
     }
-    const flags = message.content.substring(prefix.length).split('-');
-    let embed = new Discord.RichEmbed()
-    for(i=1; i < flags.length + 1; i++){
-        let fa = flags[i - 1].substring(2).split('|')
-        switch(flags[i - 1].charAt(0)){
-            case 'A':
-                if(!fa[0]) message.channel.send('Missing Author Name.')
-                else{
-                    if(fa[1]) embed.setAuthor(fa[0], fa[1])
-                    else embed.setAuthor(fa[0])
+    const flags = message.content.substring(prefix.length).split('-'); // Set flags array to the message content but seperated by '-'s
+    let embed = new Discord.RichEmbed() // New embed
+    for(i=1; i < flags.length + 1; i++){ // For all the flags in the array
+        let fa = flags[i - 1].substring(2).split('|') // Let the sub-flag variables exist
+        switch(flags[i - 1].charAt(0)){ // Check for the first character of the flag in the below statements]
+            // Most of the below follow the same structure, so I wont comment on them.
+            case 'A': // If the first character of the flag is A
+                if(!fa[0]) message.channel.send('Missing Author Name.') // If there isnt an Author Name, announce
+                else{ // If there is...
+                    if(fa[1]) embed.setAuthor(fa[0], fa[1]) // If there is a URL to a picture, put that in too!
+                    else embed.setAuthor(fa[0]) // If there isn't a URL, just put the author name.
                 }
-                break;
+                break; // Leave the case
+
             case 'B':
                 embed.addBlankField()
                 break;
@@ -120,7 +115,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                 break;
         }
     }
-    message.channel.send(embed)
+    message.channel.send(embed) // Send the embed.
 }
 
 module.exports.config = {

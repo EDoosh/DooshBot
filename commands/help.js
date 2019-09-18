@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
 
 module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin) => {
-    let dmto = bot.users.get(msgUserID)
-    if(args[1] === 'c') dmto = message.channel
+    let dmto = bot.users.get(msgUserID) // Set the bot to DM to the command issuer
+    if(args[1] === 'c') dmto = message.channel // If the first argument is c, set it to send in the channel instead
+    // The following is essentially 'Make an embed, add to the embed'
     let helpabout = new Discord.RichEmbed()
         .setTitle('About the bot.')
         .addField(`${prefix}help`, 'DM to the user this help screen.')
@@ -42,16 +43,18 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     let helpother = new Discord.RichEmbed()
         .setTitle('Other.')
         .addField(`${prefix}ping`, 'Pong!')
+        .addField(`getdbprefix`, 'Get the prefix of the server.')
         .setColor(0x55eeee)
         .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);
 
-    dmto.send(helpabout).then((member) => {
-        dmto.send(helpfun);
-        if(hasMod || hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpmod);
-        if(hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpadmin);
+    dmto.send(helpabout).then(() => { // It will attempt to send to the user/channel
+        dmto.send(helpfun); // If successful, send the rest
+        if(hasMod || hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpmod); // Check if they have admin or mod
+        if(hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpadmin); // Check if they have admin
         dmto.send(helpother);
-        if(!hasMod && !hasAdmin && !useallcmds.includes(msgUserID)) dmto.send(`Some commands have been ommitted, as you do not have access to the commands in the server you used '${prefix}help' in.`)
-    }).catch(() => {
+        // If they haven't got admin say commands were ommitted.
+        if(!hasAdmin && !useallcmds.includes(msgUserID)) dmto.send(`Some commands have been ommitted, as you do not have access to the commands in the server you used '${prefix}help' in.`)
+    }).catch(() => { // If sending the message wasnt successful, announce.
         message.channel.send('An error has occured. Maybe your DM\'s are disabled?' + `\nTry '${prefix}help c' to send it to this channel.`)
     })
 }

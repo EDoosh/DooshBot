@@ -37,7 +37,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             let fnowid = await db.get(`warns_${mentions}_${message.guild.id}.amount`);
             if(fnowid === null || fnowid === 0) return message.channel.send("This user has no warn history!")
             if(isNaN(args[3])) return message.channel.send('`Error - Bad ID!`\nCommand usage: `' + prefix + 'warnings [@user] [list | deleteid | clear | count] (warn to delete) (reason)`');
-            if(fnowid > args[3] || fnow <= 0) return message.channel.send('`Error - Bad ID!`\nCommand usage: `' + prefix + 'warnings [@user] [list | deleteid | clear | count] (warn to delete) (reason)`');
+            if(fnowid > args[3] || args[3] <= 0) return message.channel.send('`Error - Bad ID!`\nCommand usage: `' + prefix + 'warnings [@user] [list | deleteid | clear | count] (warn to delete) (reason)`');
 
             let reasonsdel = await db.get(`warns_${mentions}_${message.guild.id}.reasons`);
             let timesdel = await db.get(`warns_${mentions}_${message.guild.id}.times`);
