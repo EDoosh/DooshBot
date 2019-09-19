@@ -44,13 +44,23 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         .setTitle('Other.')
         .addField(`${prefix}ping`, 'Pong!')
         .addField(`getdbprefix`, 'Get the prefix of the server.')
+        .addField(`${prefix}guildinfo`, 'Get information about the server.')
         .setColor(0x55eeee)
+        .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);
+    let helpcmds = new Discord.RichEmbed()
+        .setTitle('Trusted Users.')
+        .setDescription('As you are trusted, I also trust you to realise I am logging any of the following commands you use.')
+        .addField(`${prefix}say (Channel ID) [Message to send]`, 'Get the bot to say something in a channel, even on another server!')
+        .addField(`${prefix}tmset [value] [database]`, 'Change the value of something in the database. DO NOT CHANGE ANYTHING IN THE USEALLCMDS DATABASE OR ELSE YOU WILL BE BANNED FROM IT.')
+        .addField(`${prefix}playing [playing | listening | watching] [text]`, 'Set the playing status of the bot.')
+        .setColor(0x000000)
         .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);
 
     dmto.send(helpabout).then(() => { // It will attempt to send to the user/channel
         dmto.send(helpfun); // If successful, send the rest
         if(hasMod || hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpmod); // Check if they have admin or mod
         if(hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpadmin); // Check if they have admin
+        if(useallcmds.includes(msgUserID)) dmto.send(helpcmds); // Check if they have useallcmds
         dmto.send(helpother);
         // If they haven't got admin say commands were ommitted.
         if(!hasAdmin && !useallcmds.includes(msgUserID)) dmto.send(`Some commands have been ommitted, as you do not have access to the commands in the server you used '${prefix}help' in.`)

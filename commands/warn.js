@@ -81,7 +81,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                     .addField(`Reason: Reached warn ban limit.`, `Use '${prefix}unban ${mentions.id} (reason)' to unban them.`)
                     .setFooter(`Use '${prefix}warnings ${mentions.id} list' to view warn history`)
                     .setTimestamp(Date.now())
-                    .setColor(0x3b0202);
+                    .setColor(0x000000);
                 if(logChannel != 0) logChannel.send(banembed);
             }).catch(() => {
                 message.channel.send('Could not ban user for reaching warn limit as the bot has a lack of permissions.\n\`Required permission: Ban User\`');

@@ -4,6 +4,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         args[2] += ' ' + args[i];
     }
     if(useallcmds.includes(msgUserID)) { // If it is an approved user...
+        console.log(`${message.author.username} (${message.author.id}) ran '${message.content}'`)
         switch(args[1]) { // Check what the first argument is. 
             case 'watching': // If first argument is watching...
                 bot.user.setActivity(args[2], { type: 'WATCHING' }); // Set activity to 'Watching ' and then the combined arguements from before

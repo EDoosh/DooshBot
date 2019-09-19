@@ -15,6 +15,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     }
     db.set(args[2], args[1]) // Set it into the database
     message.channel.send('Done!') // Announce
+    console.log(`${message.author.username} (${message.author.id}) ran '${message.content}'`)
 }
 
 module.exports.config = {

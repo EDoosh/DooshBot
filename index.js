@@ -11,7 +11,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 const NAME = 'DooshBot'; // Set name in case I wan't to change it later
-const VERSION = 'Alpha 0.5.0'; // Same with version. 
+const VERSION = 'Alpha 0.6.0'; // Same with version. 
 
 // Default settings. 
 let prefix = "-=";
@@ -107,6 +107,7 @@ bot.login(token);
 // message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
 // message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
 // message.channel.send('`Error - Requires Role Change permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify role-modify [role name]`');
+// message.channel.send('Error - Requires EDoosh or other approved members to run this command! Wait, how did you find out about it..?');
 // message.channel.send('Error - Requires EDoosh to run this command! Wait, how did you find out about it..?');
 
 // for(i = combineTo + 1; i < args.length; i++) {
@@ -126,6 +127,9 @@ bot.login(token);
 
 //   ADMIN
 // -=ban @user (reason) - Ban user, show in logchannel, log date and reason, show how many warns they were at before kick
+// -=unban @user (reason) - Unban
+// -=modify quote-channel - Sends quotes to a channel.
+// -=modify autorole - Autorole on join
 
 //   MODS
 // -=kick @user (reason) - Kick user, show in logchannel, log date and reason, show how many warns they were at before kick
