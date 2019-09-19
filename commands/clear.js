@@ -25,10 +25,10 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                     'Reason given: ' + reason)
                     .setColor(0xED3984)
                     .setFooter(dateTime);
-                if(logChannel != null) logChannel.send(clearembed); // If there is a logchannel, send the embed into there
+                if(logChannel != 0) logChannel.send(clearembed); // If there is a logchannel, send the embed into there
             } else { // If there are no permissions, announce
                 message.channel.send('Could not delete message as the bot has a lack of permissions.\n\`Required permission: Manage Messages\`');
-                if(logChannel != null) logChannel.send(`Attempted to delete ${args[1]} messages, failed due to the bot having a lack of permissions.\n\`Required permission: Manage Messages\``)
+                if(logChannel != 0) logChannel.send(`Attempted to delete ${args[1]} messages, failed due to the bot having a lack of permissions.\n\`Required permission: Manage Messages\``)
             }
         }
     }else{ // Throw error if no perms

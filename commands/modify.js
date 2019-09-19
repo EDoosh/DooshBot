@@ -78,17 +78,14 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 
             case 'log-channel': // If the user wants to edit the logchannel
                 if(!args[2]) { // If they want to see which the logchannel is
-                    if(logChannel == null || logChannel == 623817067870814208){ // If logging channels is off
+                    if(logChannel == 0){ // If logging channels is off
                         message.channel.send('Logging channel is off.') // Say
                     }else{ // If it isnt off
                         message.channel.send('Current log channel set to <#' + logChannel + '>'); // Announce log channel
                     }
                 }else if(args[2] === 'off'){ // When they want to turn it off...
                     message.channel.send(`Turned off logging channels`); // Announce
-                    db.set(`logChannel_${message.guild.id}`, 623817067870814208); // Set to a channel.
-                    // I know, you guys are going to acuse me of stealing data.
-                    // This isn't the case. This is the only way I can think of that wont throw errors.
-                    // I cant use 'null' or 'undefined' cause then quickdb throws a tantrum and it does nothing :/
+                    db.set(`logChannel_${message.guild.id}`, 0); // Set to a channel.
                 }else if(!message.guild.channels.find(channel => channel.id == args[2].slice(2, (args[2].length) - 1))) { // If there is a mentioned channel but it doesnt exist
                     message.channel.send('`Error - Channel does not exist!`\nCommand usage: `' + prefix + 'modify log-channel [new log-channel]`'); // Complain the channel doesnt exist
                 }else{ // If a channel does exist

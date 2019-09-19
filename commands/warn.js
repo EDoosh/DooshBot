@@ -67,10 +67,10 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                     .setFooter(`Use '${prefix}warnings ${mentions.id} list' to view warn history`)
                     .setTimestamp(Date.now())
                     .setColor(0x9055ee);
-                if(logChannel != null) logChannel.send(kickembed); // Send embed in logchannel if it exists
+                if(logChannel != 0) logChannel.send(kickembed); // Send embed in logchannel if it exists
             }).catch(() => { // If the kickening failed... announce.
                 message.channel.send('Could not kick user for reaching warn limit as the bot has a lack of permissions.\n\`Required permission: Kick User\`');
-                if(logChannel != null) logChannel.send(`Attempted to kick ${mentionsun} for reaching warn limit, failed due to the bot having a lack of permissions.\n\`Required permission: Kick User\``)
+                if(logChannel != 0) logChannel.send(`Attempted to kick ${mentionsun} for reaching warn limit, failed due to the bot having a lack of permissions.\n\`Required permission: Kick User\``)
             })
         }else if(famount === plvlban){ // Same as above pretty much.
             banneduser = bot.users.find(user => user.id === mentionsid);
@@ -82,10 +82,10 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                     .setFooter(`Use '${prefix}warnings ${mentions.id} list' to view warn history`)
                     .setTimestamp(Date.now())
                     .setColor(0x3b0202);
-                if(logChannel != null) logChannel.send(banembed);
+                if(logChannel != 0) logChannel.send(banembed);
             }).catch(() => {
                 message.channel.send('Could not ban user for reaching warn limit as the bot has a lack of permissions.\n\`Required permission: Ban User\`');
-                if(logChannel != null) logChannel.send(`Attempted to ban ${mentionsun} for reaching warn limit, failed due to the bot having a lack of permissions.\n\`Required permission: Ban User\``)
+                if(logChannel != 0) logChannel.send(`Attempted to ban ${mentionsun} for reaching warn limit, failed due to the bot having a lack of permissions.\n\`Required permission: Ban User\``)
             })
         }else if(famount === plvlwarn){ // If theyre at notify level
             message.channel.send(`This user has reached the notify level at ${plvlwarn} warns!`); // Announce
@@ -94,7 +94,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                 .setFooter(`Use '${prefix}warnings ${mentionsun} list' to view warn history`)
                 .setTimestamp(Date.now())
                 .setColor(0x07deaf);
-            if(logChannel != null) logChannel.send(notifyembed); // Send embed in logchannel if it exists
+            if(logChannel != 0) logChannel.send(notifyembed); // Send embed in logchannel if it exists
         }
     }
 
@@ -108,7 +108,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         .setColor(0xF55656)
         .setTimestamp(Date.now())
         .setFooter(`Use ${prefix}warnings @${mentionsun} list' to view their server warning history.`);
-    if(logChannel != null) logChannel.send(warnembed); // Send embed in logchannel if it exists.
+    if(logChannel != 0) logChannel.send(warnembed); // Send embed in logchannel if it exists.
 }
 
 module.exports.config = {

@@ -11,7 +11,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 const NAME = 'DooshBot'; // Set name in case I wan't to change it later
-const VERSION = 'Alpha 0.4.0'; // Same with version. 
+const VERSION = 'Alpha 0.5.0'; // Same with version. 
 
 // Default settings. 
 let prefix = "-=";
@@ -35,11 +35,13 @@ fs.readdir('./commands/', (err, files) => {    // Set directory to look for stuf
 		bot.commands.set(cmds.config.command, cmds);    // idk
 	})
 	console.log('Startup Complete')    // Say its complete
+	
 })
 
 // WHEN THE BOT IS ONLINE
 bot.on('ready', () =>{
 	console.log('ONLINE');
+	console.log(`Bot has started, with ${bot.users.size} users, in ${bot.channels.size} channels of ${bot.guilds.size} guilds.`);
 });
 
 // WHEN A MESSAGE IS SENT IN A GUILD
@@ -69,7 +71,7 @@ bot.on('message', async message => {
 		//   LogChannel
 		let flc = await db.get(`logChannel_${message.guild.id}`);
 		if (flc != null) logChannel = bot.channels.get(flc);
-		else logChannel = null;
+		else logChannel = 0;
 		//   USEALLCMDS
 		let useallcmdsgrab = await db.get(`useallcmds`);
 		let useallcmds = ''
@@ -111,9 +113,16 @@ bot.login(token);
 // 	args[combineTo] += ' ' + args[i];
 // }
 
+//   MISC
+// Join message gives tips on how to set it up
+// Everything accepts Mentions, IDs, Names, and Nothing (To get self)
+// Fix deleteID
+
+//   ME
+
 //   TRUSTED
 // -=quote globaladd [messageID] - Get the authors's nickname of the message, the date, the message ID, and the contents, then add it to a DB. Make amount increment too.
-// -=quote globalremove [QuoteID] - Remove the quote by the quote's ID
+// -=quote globalremove [QuoteID] - Remove the quote by the quote's ID 
 
 //   ADMIN
 // -=ban @user (reason) - Ban user, show in logchannel, log date and reason, show how many warns they were at before kick
@@ -122,7 +131,6 @@ bot.login(token);
 // -=kick @user (reason) - Kick user, show in logchannel, log date and reason, show how many warns they were at before kick
 // -=quote add [messageID] - Same as trusted, just for the server only
 // -=quote remove [QuoteID] - Same as trusted, just for the server only
-// -=embed -T(Title) -A(Author) -Z(Footer) -F(Field) -I(Image) -S(Sub-Image/Footer Image) -C(Colour) -B(Blank Field) -D(Desciption) -U(URL) -E(Timestamp)
 
 //   ROLE MODIFY
 // -=er create [name] (hex) - Create role with that name. Get level their highest role is at, and put it one above. Make sure it doesn't conflict with other role names?
