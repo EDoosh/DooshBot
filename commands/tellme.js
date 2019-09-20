@@ -3,9 +3,9 @@ const db = require('quick.db');
 
 module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin) => {
     if(args[1]) { // If there is a second argument
-        let mentionedmember = '' // Set variables
-        let tellmenum = ''
-        let memberid = ''
+        let mentionedmember; // Set variables
+        let tellmenum;
+        let memberid;
         if(message.mentions.members.first()) { // If there is a mentioned member
             if(args[2]) { // If there is a second argument
                 mentionedmember = bot.users.find(user => user.id == message.mentions.members.first().id).username; // Get the username of the mentioned member
@@ -16,6 +16,24 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                 }
             } else { // If there is nothing to evaluate, say so.
                 return message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+            }
+        } else if (bot.users.find(user => user.username === args[1])) { // If a user is mentioned by name...
+            // Make sure there is something to evaluate
+            if(!args[2]) return message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+            mentionedmember = args[1] // Set mentioned member to be the username
+            memberid = bot.users.find(user => user.username === args[1]).id // MemberID is the users ID
+            args[1] = args[2] // Combine everything after the mention to evaluate it.
+            for(i = 2 + 1; i < args.length; i++) {
+                args[1] += ' ' + args[i];
+            }
+        } else if (bot.users.find(user => user.id === args[1])) { // If there is a user mentioned by ID...
+            // Make sure there is something to evaluate
+            if(!args[2]) return message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+            mentionedmember = bot.users.find(user => user.id == args[1]).username; // Set mentioned member to username by finding by ID
+            memberid = args[1] // MemberID is the users ID
+            args[1] = args[2] // Combine everything after the mention to evaluate it.
+            for(i = 2 + 1; i < args.length; i++) {
+                args[1] += ' ' + args[i];
             }
         } else { // If there is not a mentioned member
             mentionedmember = message.author.username // Get the username of the message author

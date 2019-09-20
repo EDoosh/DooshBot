@@ -7,7 +7,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         message.channel.send("Please don't use 'prefix' or a backslash in a prefix. It confuses the bot.")
     } else { // Otherwise...
         // Check if they have admin.
-        if(hasAdmin || msgUsername == serverOwner || useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
+        if(!hasAdmin && !msgUsername == serverOwner && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
         db.set(`prefix_${message.guild.id}`, args[1]) // Set prefix to prefix argument in database
         message.channel.send('Successfully set prefix to `' + args[1] + '`'); // Announce
 

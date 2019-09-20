@@ -14,7 +14,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         .setTitle('Fun!')
         .addField(`${prefix}tellme (@user) [thing]`, 'Tell the user their score about a thing on a scale of 0 to 10!')
         .addField(`${prefix}avatar (@user)`, 'Get the avatar + link of yourself or another person.')
-        .addField(`${prefix}reddit [subreddit]`, 'Get the best posts of the week from reddit and post them in the chat!')
+        .addField(`${prefix}reddit [subreddit] (queries)`, 'Get the best posts of the week from reddit and post them in the chat! Queries means the number of posts it will choose to get. Higher means more variety, but may result in the bot bugging out.')
         .setColor(0x58ee55)
         .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);
     let helpmod = new Discord.RichEmbed()
@@ -51,7 +51,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         .setTitle('Trusted Users.')
         .setDescription('As you are trusted, I also trust you to realise I am logging any of the following commands you use.')
         .addField(`${prefix}say (Channel ID) [Message to send]`, 'Get the bot to say something in a channel, even on another server!')
-        .addField(`${prefix}tmset [value] [database]`, 'Change the value of something in the database. DO NOT CHANGE ANYTHING IN THE USEALLCMDS DATABASE OR ELSE YOU WILL BE BANNED FROM IT.')
+        .addField(`${prefix}dbset [value] [database]`, 'Change the value of something in the database. DO NOT CHANGE ANYTHING IN THE USEALLCMDS DATABASE OR ELSE YOU WILL BE BANNED FROM IT.')
         .addField(`${prefix}playing [playing | listening | watching] [text]`, 'Set the playing status of the bot.')
         .setColor(0x000000)
         .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);

@@ -104,20 +104,41 @@ bot.on('message', async message => {
 
 bot.login(token);
 
+
+
 // message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
 // message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
 // message.channel.send('`Error - Requires Role Change permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify role-modify [role name]`');
 // message.channel.send('Error - Requires EDoosh or other approved members to run this command! Wait, how did you find out about it..?');
 // message.channel.send('Error - Requires EDoosh to run this command! Wait, how did you find out about it..?');
 
+
+
 // for(i = combineTo + 1; i < args.length; i++) {
 // 	args[combineTo] += ' ' + args[i];
 // }
 
+
+
+// let mentions = message.mentions.members.first(); // Get the mentioned person
+// let usercollection; // Set the usercollection to blank
+// if(mentions) usercollection = bot.users.find(user => user.id == mentions.id) // If there is a mentioned person, set usercollection to be the retrieved user collection
+// else if(bot.users.find(user => user.id === args[1])) usercollection = bot.users.find(user => user.id == args[1]) // Otherwise check if a userID was said, set usercollection to be the retrieved user collection
+// else if(bot.users.find(user => user.username === args[1])) usercollection = bot.users.find(user => user.username === args[1]) // Otherwise check if a raw username was said, set... you get the point
+// else usercollection = message.author // If no other checks were passed, set usercollection to the author's collection
+// mentionsid = usercollection.id
+// mentionsun = usercollection.username
+
+
+// message.channel.send(`\`Error - !\`\nCommand usage: \`${prefix} \``)
+// if(logChannel != 0) logChannel.send()
+
+
 //   MISC
 // Join message gives tips on how to set it up
-// Everything accepts Mentions, IDs, Names, and Nothing (To get self)
-// Fix deleteID
+// Fix -=modify modrole and others to use role IDs & names
+// COOLDOWNS, and maybe premium?
+// ALIASES
 
 //   ME
 
@@ -147,3 +168,14 @@ bot.login(token);
 
 //   EVERYONE
 // -=poll 'Option 1' 'Option 2' - Maximum 10, adds reactions, seperate options by apostrophe
+// -=floridaman
+// -=news
+// -=fact - All of the above from external sources.
+
+
+// Plans for the distant future
+// - Expiring warns. Modify segment where admins can set how long the default is. You have access to days and months to make it last for.
+// - Mute. Reason and length. Set auto mute warn lvl. Mute channels on creation, as well as on join to a guild. Allow admins to set default length, as well as length of mute for plvl mutes.
+// - Sharting. Sharding
+// - Poll automatically announces winning after set period
+// - Music features?

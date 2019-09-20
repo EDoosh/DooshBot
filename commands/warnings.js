@@ -8,6 +8,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     let mentions; // Make mentions exist with nothing in it.
     if(message.mentions.members.first()) mentions = message.mentions.members.first().id // If there is a mention, get their id and put it in mentions
     else if(bot.users.find(user => user.id == args[1])) mentions = args[1] // If there is a valid user ID, get their ID and put it in mentions
+    else if(bot.users.find(user => user.username === args[1])) mentions = bot.users.find(user => user.username === args[1]).id // If a name was said, get their ID
     // If neither of the above, throw error
     else return message.channel.send('`Error - Unspecified member to check warnings of!`\nCommand usage: `' + prefix + 'warnings [@user] [list | deleteid | clear | count] (warn to delete) (reason)`');
     

@@ -9,7 +9,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                                                         `logChannel: logChannel\\_guildid\nprefix: prefix\\_guildid\n` + 
                                                         `Warns: warns\\_warnedid\\_guildid \n AVAILABLE WARN OBJECTS: .amount .reasons .time .warner .warnerusername\n` + 
                                                         `TellMe: tm\\_tellme\\_ userid`)
-    if(!args[2]) return message.channel.send(`${prefix}tmset (value) (db)`) // If there isn't a database to go to, throw an error
+    if(!args[2]) return message.channel.send(`${prefix}dbset (value) (db)`) // If there isn't a database to go to, throw an error
     for(i = 2 + 1; i < args.length; i++) { // Combine everything past argument 2 into arg 2
     	args[2] += ' ' + args[i];
     }
@@ -19,5 +19,5 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "tmset"
+    command: "dbset"
 }
