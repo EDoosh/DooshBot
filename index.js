@@ -11,7 +11,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 const NAME = 'DooshBot'; // Set name in case I wan't to change it later
-const VERSION = 'Alpha 0.8.0'; // Same with version. 
+const VERSION = 'Alpha 0.9.0'; // Same with version. 
 
 // Default settings. 
 let prefix = "-=";
@@ -36,6 +36,23 @@ fs.readdir('./commands/', (err, files) => {    // Set directory to look for stuf
 	})
 	console.log('Startup Complete')    // Say its complete
 	
+})
+
+// Whenever the bot is added to a server
+bot.on('guildCreate', guild => {
+	let channelID;
+    let channels = guild.channels;
+    channelLoop:
+    for (let c of channels) {
+        let channelType = c[1].type;
+        if (channelType === "text") {
+            channelID = c[0];
+            break channelLoop;
+        }
+    }
+
+    let channel = bot.channels.get(guild.systemChannelID || channelID);
+	channel.send(`Thanks for inviting this bot! \nI'd recommend setting up the permissions and such for the bot first.\nTo get started however, if you want the full commands of the bot, use \`-=help\`\nFirstly, use \`-=modify mod-role (role name)\` to let that role have mod-role permissions.\nSecondly, use \`-=modify admin-role (role name)\` to let that role have admin-role permissions.\nUse \`-=plvl kick (level)\` to set the amount of warns required to kick someone.\nSame goes for \`-=plvl ban (level)\` with bans.\n\`-=plvl notify (level)\` will set the warns required to notify you they are getting close to being kicked or warned or whatever you want.\nLastly, \`-=modify log-channel (#channel)\` will let you set the logging channel.\nThank you for choosing to invite ${NAME}! If you face issues, please DM 'EDoosh#9599' or join the invite link with \`-=info\`.`);
 })
 
 // WHEN THE BOT IS ONLINE
@@ -135,7 +152,6 @@ bot.login(token);
 
 
 //   MISC
-// Join message gives tips on how to set it up
 // Fix -=modify modrole and others to use role IDs & names
 // COOLDOWNS, and maybe premium?
 // ALIASES
@@ -166,8 +182,7 @@ bot.login(token);
 // -=er colour [hex] - Check if they have a role. If true, recolour their role. If false, don't.
 // -=er delete - Delete their role.
 
-//   EVERYONE
-// -=poll 'Option 1' 'Option 2' - Maximum 10, adds reactions, seperate options by apostrophe
+//   ALL
 
 
 // Plans for the distant future

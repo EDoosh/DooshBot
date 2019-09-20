@@ -12,7 +12,10 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             args[2] += ' ' + args[i];
         }
         const channeltosendto = bot.channels.find(channel => channel.id === args[1]) // Set the channel to send to
-        channeltosendto.send(args[2]) // Send the message
+        channeltosendto.send(args[2]).then(() => {
+        }).catch(() => {
+            message.channel.send('I dont have access to send messages there.')
+        }) // Send the message
     } else { // If there isnt a channel ID in the first arg...
         for(i = 1 + 1; i < args.length; i++) { // Combine everything
             args[1] += ' ' + args[i];
