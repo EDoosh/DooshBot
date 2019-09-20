@@ -59,9 +59,13 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 
         let famount = await db.get(`warns_${mentions.id}_${message.guild.id}.amount`); // Get the new amount of warns they have
         if(famount === plvlkick){ // If they've reached the pwarn level to be kicked
-            let kickeduser = mentions // Set kickuser to the same collection as mentioned user
-            banneduser.send(`You were kicked from ${message.guild.name} for having too many warns.`).then(() => { // Tell them they have too many warns and were kicked
-                kickeduser.kick().then(() => { // Kick the user
+            let kickeduser = mentions;
+            kickeduser.send(`You were kicked from ${message.guild.name} for having too many warns.`).then(() => {
+                kickUser()
+            }).catch(() => kickUser())
+
+            function kickUser() {
+                kickeduser.kick().then(() => {
                     message.channel.send(`${mentionsun} (${mentions.id}) was kicked for reaching the warn kick limit.`); // If the kickening succeeded, say they were kicked
                     let kickembed = new Discord.RichEmbed() // Ooo embeds! My favourite!
                         .setTitle(`:boot: Kicked user ${mentionsun} (${mentions.id})`)
@@ -70,15 +74,19 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                         .setTimestamp(Date.now())
                         .setColor(0x9055ee);
                     if(logChannel != 0) logChannel.send(kickembed); // Send embed in logchannel if it exists
-                }).catch(() => { // If the kickening failed... announce.
+                }).catch(() => {
                     message.channel.send('Could not kick user for reaching warn limit as the bot has a lack of permissions.\n\`Required permission: Kick User\`');
                     if(logChannel != 0) logChannel.send(`Attempted to kick ${mentionsun} for reaching warn limit, failed due to the bot having a lack of permissions.\n\`Required permission: Kick User\``)
                 })
-            })
+            }
         }else if(famount === plvlban){ // Same as above pretty much.
-            banneduser = bot.users.find(user => user.id === mentionsid);
-            banneduser.send(`You were banned from ${message.guild.name} for having too many warns.`).then(() => {
-                message.guild.ban(banneduser).then(() => {
+            usercollection = bot.users.find(user => user.id === mentionsid);
+            usercollection.send(`You were banned from ${message.guild.name} for reaching too many warns.`).then(() => {
+                banUser()
+            }).catch(() => banUser())
+        
+            function banUser() {
+                message.guild.ban(usercollection, `User banned for reaching too many warns.`).then(() => {
                     message.channel.send(`${mentionsun} (${mentions.id}) was banned for reaching the warn ban limit.`);
                     let banembed = new Discord.RichEmbed()
                         .setTitle(`:hammer: Banned user ${mentionsun} (${mentions.id})`)
@@ -91,7 +99,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                     message.channel.send('Could not ban user for reaching warn limit as the bot has a lack of permissions.\n\`Required permission: Ban User\`');
                     if(logChannel != 0) logChannel.send(`Attempted to ban ${mentionsun} for reaching warn limit, failed due to the bot having a lack of permissions.\n\`Required permission: Ban User\``)
                 })
-            })
+            }
         }else if(famount === plvlwarn){ // If theyre at notify level
             message.channel.send(`This user has reached the notify level at ${plvlwarn} warns!`); // Announce
             let notifyembed = new Discord.RichEmbed() // Embed

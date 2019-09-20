@@ -14,24 +14,33 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     else return message.channel.send(`\`Error - Invalid user to kick!\`\nCommand usage: \`${prefix}kick [@user] (reason)\``) // If none of the above, give an error
     mentionsid = usercollection.id
     mentionsun = usercollection.username
+
+    let argstart = 2
+    if(args[2] === 's') argstart = 3
     
     let reason = 'None given.' // Combine reasons
-    for(i = 2 + 1; i < args.length; i++) {
-        args[2] += ' ' + args[i];
+    for(i = argstart + 1; i < args.length; i++) {
+        args[argstart] += ' ' + args[i];
     }
-    if(args[2]) reason = args[2]
+    if(args[argstart]) reason = args[argstart]
 
     let kickeduser = message.guild.members.find(member => member.id === mentionsid) // Kicked user needs to be as a guildmember and not a user I think.
-    kickeduser.send(`You were kicked from ${message.guild.name} for reason '${reason}'`).then(() => {
+    let kickorsoft = 'Kicked'
+    if(argstart === 2) {
+        kickeduser.send(`You were kicked from ${message.guild.name} for reason '${reason}'`).then(() => {
+            kickUser()
+        }).catch(() => kickUser())
+    } else {
         kickUser()
-    }).catch(() => kickUser())
+        kickorsoft = 'Soft-kicked'
+    }
 
     function kickUser() {
         kickeduser.kick().then(() => {
-            message.channel.send(`${mentionsun} (${mentionsid}) was kicked for reason '${reason}'`);
+            message.channel.send(`${mentionsun} (${mentionsid}) was ${kickorsoft} for reason '${reason}'`);
             let kickembed = new Discord.RichEmbed()
-                .setTitle(`:boot: Kicked user ${mentionsun} (${mentionsid})`)
-                .addField(`Reason: ${reason}`, `Kicked by ${message.author.username} (${message.author.id})`)
+                .setTitle(`:boot: ${kickorsoft} user ${mentionsun} (${mentionsid})`)
+                .addField(`Reason: ${reason}`, `${kickorsoft} by ${message.author.username} (${message.author.id})`)
                 .setFooter(`Use '${prefix}warnings ${mentionsid} list' to view warn history`)
                 .setTimestamp(Date.now())
                 .setColor(0x9055ee);

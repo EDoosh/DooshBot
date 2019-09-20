@@ -15,22 +15,31 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     mentionsid = usercollection.id
     mentionsun = usercollection.username
     
-    let reason = 'None given.'
-    for(i = 2 + 1; i < args.length; i++) {
-        args[2] += ' ' + args[i];
+    let argstart = 2
+    if(args[2] === 's') argstart = 3
+    
+    let reason = 'None given.' // Combine reasons
+    for(i = argstart + 1; i < args.length; i++) {
+        args[argstart] += ' ' + args[i];
     }
-    if(args[2]) reason = args[2]
+    if(args[argstart]) reason = args[argstart]
 
-    usercollection.send(`You were banned from ${message.guild.name} for reason '${reason}'`).then(() => {
+    let banorsoft = 'Banned'
+    if(argstart === 2) {
+        usercollection.send(`You were banned from ${message.guild.name} for reason '${reason}'`).then(() => {
+            banUser()
+        }).catch(() => banUser())
+    } else {
         banUser()
-    }).catch(() => banUser())
+        banorsoft = 'Soft-banned'
+    }
 
     function banUser() {
-        message.guild.ban(usercollection, `User banned by ${message.author.username} (${message.author.id}) for reason '${reason}'`).then(() => {
-            message.channel.send(`${mentionsun} (${mentionsid}) was banned for ${reason}`);
+        message.guild.ban(usercollection, `User ${banorsoft} by ${message.author.username} (${message.author.id}) for reason '${reason}'`).then(() => {
+            message.channel.send(`${mentionsun} (${mentionsid}) was ${banorsoft} for ${reason}`);
             let banembed = new Discord.RichEmbed()
-                .setTitle(`:hammer: Banned user ${mentionsun} (${mentionsid})`)
-                .addField(`Reason: ${reason}`, `Banned by ${message.author.username} (${message.author.id})\n` + `Use '${prefix}unban ${mentionsid} (reason)' to unban them.`)
+                .setTitle(`:hammer: ${banorsoft} user ${mentionsun} (${mentionsid})`)
+                .addField(`Reason: ${reason}`, `${banorsoft} by ${message.author.username} (${message.author.id})\n` + `Use '${prefix}unban ${mentionsid} (reason)' to unban them.`)
                 .setFooter(`Use '${prefix}warnings ${mentionsid} list' to view warn history`)
                 .setTimestamp(Date.now())
                 .setColor(0x000000);
