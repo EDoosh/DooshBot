@@ -11,6 +11,7 @@
   "dependencies": {
     "better-sqlite3": "^5.4.3",
     "discord.js": "^11.5.1",
+    "newsapi": "^2.4.0",
     "quick.db": "^7.0.0-b22",
     "quick.hook": "^1.5.1",
     "snekfetch": "^4.0.4"

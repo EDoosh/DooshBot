@@ -11,7 +11,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 const NAME = 'DooshBot'; // Set name in case I wan't to change it later
-const VERSION = 'Alpha 0.6.0'; // Same with version. 
+const VERSION = 'Alpha 0.8.0'; // Same with version. 
 
 // Default settings. 
 let prefix = "-=";
@@ -147,13 +147,13 @@ bot.login(token);
 // -=quote globalremove [QuoteID] - Remove the quote by the quote's ID 
 
 //   ADMIN
-// -=ban @user (reason) - Ban user, show in logchannel, log date and reason, show how many warns they were at before kick
-// -=unban @user (reason) - Unban
 // -=modify quote-channel - Sends quotes to a channel.
-// -=modify autorole - Autorole on join
+// -=jl ar - Autorole on member join
+// -=jl mj - Message on member join
+// -=jl ml - Message on member leave
+// -=modify jl-channel - Changes joinleave channel.
 
 //   MODS
-// -=kick @user (reason) - Kick user, show in logchannel, log date and reason, show how many warns they were at before kick
 // -=quote add [messageID] - Same as trusted, just for the server only
 // -=quote remove [QuoteID] - Same as trusted, just for the server only
 
@@ -168,9 +168,6 @@ bot.login(token);
 
 //   EVERYONE
 // -=poll 'Option 1' 'Option 2' - Maximum 10, adds reactions, seperate options by apostrophe
-// -=floridaman
-// -=news
-// -=fact - All of the above from external sources.
 
 
 // Plans for the distant future
