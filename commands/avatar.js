@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
     let embed = new Discord.RichEmbed() // Make a new embed.
     let mentions = message.mentions.members.first(); // Get the mentioned person
     let usera = '' // Its a surprise tool that will help us later!

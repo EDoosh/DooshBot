@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, usedcmd) => {
     let dmto = bot.users.get(msgUserID) // Set the bot to DM to the command issuer
     if(args[1] === 'c') dmto = message.channel // If the first argument is c, set it to send in the channel instead
     // The following is essentially 'Make an embed, add to the embed'
@@ -17,7 +17,17 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         .addField(`${prefix}reddit [subreddit] (queries)`, 'Get the best posts of the week from reddit and post them in the chat! Queries means the number of posts it will choose to get. Higher means more variety, but may result in the bot bugging out.')
         .addField(`${prefix}fact`, 'Get a random fact.')
         .addField(`${prefix}news (search term)`, 'Get a random news article. If a search term is provided, it will search over the past 7 days for it.')
+        .addField(`${prefix}poll |[Title] |[Option 1] |[Option 2]...`, 'Create a poll. Maximum of 10 options.')
         .setColor(0x58ee55)
+        .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);
+    let helprm = new Discord.RichEmbed()
+        .setTitle('Role Modify.')
+        .addField(`${prefix}er create [hex colour] [name]`, `Create a role and give it to you.`)
+        .addField(`${prefix}er delete`, `Delete your role.`)
+        .addField(`${prefix}er name [new name]`, `Change the name of your role.`)
+        .addField(`${prefix}er [colour | color] [new colour]`, `Change the colour of your role.`)
+        .addField(`${prefix}er t`, `Change between having the role and not having the role.`)
+        .setColor(0x8f5eeb)
         .setFooter(`${NAME}'s Command Help - Version ${VERSION}`);
     let helpmod = new Discord.RichEmbed()
         .setTitle('Moderation.')
@@ -63,6 +73,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 
     dmto.send(helpabout).then(() => { // It will attempt to send to the user/channel
         dmto.send(helpfun); // If successful, send the rest
+        if(hasRoleMod || hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helprm); // Check if they have admin or rolemod
         if(hasMod || hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpmod); // Check if they have admin or mod
         if(hasAdmin || useallcmds.includes(msgUserID)) dmto.send(helpadmin); // Check if they have admin
         if(useallcmds.includes(msgUserID)) dmto.send(helpcmds); // Check if they have useallcmds
@@ -73,6 +84,14 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         message.channel.send('An error has occured. Maybe your DM\'s are disabled?' + `\nTry '${prefix}help c' to send it to this channel.`)
     })
 }
+
+// USED COLOURS
+// BLACK
+// LBLUE
+// RED
+// MAGENTA
+// GREEN
+// YELLOW
 
 module.exports.config = {
     command: "help"

@@ -19,6 +19,7 @@ let adminrole = [];
 let modrole = [];
 let rmrole = [];
 let logChannel = '';
+const usedcmd = new Set();
 
 // Load in commands from Discord Bot/Commands
 bot.commands = new Discord.Collection()
@@ -69,8 +70,18 @@ bot.on('message', async message => {
 		if (fprefix === null) prefix = "-=";
 		else prefix = fprefix;
 
+		// PREMIUM!!!
+		const premiummembers = await db.get(`premiummembers.id`);
+		const premiumservers = await db.get(`premiumservers.id`);
+
 		if(message.content === 'getdbprefix') return message.channel.send(`The current DooshBot prefix is \`${prefix}\``); // If the user wants the prefix, give it to them dammit!		
 		if(!message.content.startsWith(prefix) || message.author.bot == true) return;    // If message didn't start with the prefix or was sent by a bot, dont run next code
+		if (!premiumservers.includes(message.guild.id) && !premiummembers.includes(message.author.id)) { // If they aren't in a premium guild or arent a premium member
+			if (usedcmd.has(message.author.id)) return message.reply('please wait before using a command again!') // Check if they have used a command recently, return error if they have
+			usedcmd.add(message.author.id); // If they havent used one recently, add them to recent list
+			setTimeout(() => {usedcmd.delete(message.author.id)}, 5000); // After 5 seconds remove them.
+		}
+		
 		// GET THE SETTINGS FROM THE DATABASE ABOUT THE SERVER
 		//   Adminrole
 		let fadmrole = await db.get(`adminrole_${message.guild.id}`);
@@ -115,7 +126,7 @@ bot.on('message', async message => {
 		const args = message.content.substring(prefix.length).split(' ');    // Create arguments array by cutting off the prefix then seperating the arguments into indexes by spaces
 		var cmd = bot.commands.get(args[0])    // Set cmd to the command to run it later if it exists in the Discord 'bot.commands' Collection we set earlier
 		// Run the command with the prefix located in Discord Bot/commands if it exists.
-		if(cmd) cmd.run(bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime);
+		if(cmd) cmd.run(bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd);
 	}
 })
 
@@ -153,7 +164,6 @@ bot.login(token);
 
 //   MISC
 // Fix -=modify modrole and others to use role IDs & names
-// COOLDOWNS, and maybe premium?
 // ALIASES
 
 //   ME
@@ -172,15 +182,6 @@ bot.login(token);
 //   MODS
 // -=quote add [messageID] - Same as trusted, just for the server only
 // -=quote remove [QuoteID] - Same as trusted, just for the server only
-
-//   ROLE MODIFY
-// -=er create [name] (hex) - Create role with that name. Get level their highest role is at, and put it one above. Make sure it doesn't conflict with other role names?
-//							Check if they have one already. If so, tell them. If not, create.
-//							Log creation date, name, and owner in logchannel. Log ID and owner in db.
-//							If no hex is set, make it rnd? Otherwise, set to that
-// -=er rename [name] - Check if they have a role. If true, rename their role. If false, tell them no.
-// -=er colour [hex] - Check if they have a role. If true, recolour their role. If false, don't.
-// -=er delete - Delete their role.
 
 //   ALL
 

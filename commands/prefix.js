@@ -1,6 +1,6 @@
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, usedcmd) => {
     if(!args[1]) { // If there isn't a second argument, show current prefix.
         message.channel.send('Server prefix is set to `' + prefix + '`')
     } else if(args[1].includes('prefix') || args[1].includes('\\')) { // If the prefix includes the word 'prefix' or '\' show error

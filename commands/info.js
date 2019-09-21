@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, usedcmd) => {
     // Create embed, print embed. Simple, really.
     var infoembed = new Discord.RichEmbed()
         .setTitle(NAME)

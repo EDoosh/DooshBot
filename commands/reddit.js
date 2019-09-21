@@ -5,7 +5,7 @@ const snekfetch = require('snekfetch');
 // CREDIT TO u/KingCrowley0
 // https://www.reddit.com/r/Discord_Bots/comments/9khght/pulling_random_images_from_subreddits_js/
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
     // If lacks subreddit argument, show error
     if(!args[1]) return message.channel.send('`Error - Unspecified subreddit to get posts from!`\nCommand usage: `' + prefix + 'reddit [subreddit] (queries)`')
     let queries = 500 // Set default query count to 500

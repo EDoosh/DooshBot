@@ -1,6 +1,6 @@
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, usedcmd) => {
     if(msgUsername === serverOwner || hasAdmin || useallcmds.includes(msgUserID)) { // If command issuer is server owner, is admin, or is AllCmds, allow them to run command
 
         function combineArgs(combineTo) { // Combines args

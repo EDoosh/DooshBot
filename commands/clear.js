@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime) => {
+module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
     if(hasMod || hasAdmin || useallcmds.includes(msgUserID)) { // Make sure they have Mod or above
         if(!args[1]) { // If there isnt an amount of messages to delete
             message.channel.send('`Error - Unspecified number of messages to delete!`\nCommand usage: `' + prefix + 'clear [message count] (reason)`'); // Throw error
