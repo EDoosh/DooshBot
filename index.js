@@ -11,7 +11,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 const NAME = 'DooshBot'; // Set name in case I wan't to change it later
-const VERSION = 'Alpha 0.9.0'; // Same with version. 
+const VERSION = 'Beta 1.0.0'; // Same with version. 
 
 // Default settings. 
 let prefix = "-=";
@@ -20,6 +20,17 @@ let modrole = [];
 let rmrole = [];
 let logChannel = '';
 const usedcmd = new Set();
+
+const premiummembers = [
+	'267723762563022849', // Me
+	'189125691504066561', // Finn
+	'274972137092284416' // Kelley
+]
+const premiumservers = [
+	'619704310615506955', // DooshBot (Mine)
+	'469048258304671745' // Team Optimus (Mine)
+]
+
 
 // Load in commands from Discord Bot/Commands
 bot.commands = new Discord.Collection()
@@ -69,10 +80,6 @@ bot.on('message', async message => {
 		let fprefix = await db.fetch(`prefix_${message.guild.id}`);
 		if (fprefix === null) prefix = "-=";
 		else prefix = fprefix;
-
-		// PREMIUM!!!
-		const premiummembers = await db.get(`premiummembers.id`);
-		const premiumservers = await db.get(`premiumservers.id`);
 
 		if(message.content === 'getdbprefix') return message.channel.send(`The current DooshBot prefix is \`${prefix}\``); // If the user wants the prefix, give it to them dammit!		
 		if(!message.content.startsWith(prefix) || message.author.bot == true) return;    // If message didn't start with the prefix or was sent by a bot, dont run next code
