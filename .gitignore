@@ -4,3 +4,5 @@ commands/n.js
 tokennewsapi.txt
 json.sqlite
 json.sqlite
+node_modules/
+bibletoken.txt

@@ -1,16 +1,15 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    if(!hasRoleMod && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Role Modify permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify role-modify [role name]`');
-    if(!args[1]) return message.channel.send(`\`Error - Unspecified value!\`\nCommand usage: \`${prefix}er [create | delete | colour | name] (values)\``);
+module.exports.run = async (bot, message, args) => {
+    if(!args[1]) return errormsg.run(bot, message, args, "a", `\`Unspecified value!\`\nCommand Usage: \`${prefix}${this.config.command[0]}${this.config.helpg}\``);
     if(!message.guild.me.hasPermission(["MANAGE_ROLES", "ADMINISTRATOR"])) return message.channel.send('I do not have permissions to edit roles!');
     let getrole = await db.get(`custrole_${message.author.id}_${message.guild.id}`);
     switch(args[1]){
         case 'create':
             if (getrole != null && getrole != 0) return message.channel.send(`Error! You already have a role!`) 
 
-            if(!args[3]) return message.channel.send(`\`Error - Unspecified value!\`\nCommand usage: \`${prefix}er create [hex colour] [name]\``);
+            if(!args[3]) return errormsg.run(bot, message, args, 1, "Unspecified value!");
             for(i = 3 + 1; i < args.length; i++) {
                 args[3] += ' ' + args[i];
             }
@@ -46,7 +45,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         case 'color':
             if (getrole == null || getrole == 0) return message.channel.send(`You don't have a role!`);
             let rolecoll = message.guild.roles.find(role => role.id === getrole)
-            if (!args[2]) return message.channel.send(`\`Error - Unspecified value!\`\nCommand usage: \`${prefix}er colour [hex colour]\``)
+            if (!args[2]) return errormsg.run(bot, message, args, 2, "Unspecified value")
             rolecoll.edit({ color: `0x${args[2]}` }).then(() => {
                 message.channel.send(`Colour successfully changed to \`${args[2]}\``)
             }).catch((err) => {
@@ -58,7 +57,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         case 'name':
             if (getrole == null || getrole == 0) return message.channel.send(`You don't have a role!`);
             let rolecolle = message.guild.roles.find(role => role.id === getrole)
-            if (!args[2]) return message.channel.send(`\`Error - Unspecified value!\`\nCommand usage: \`${prefix}er name [name]\``)
+            if (!args[2]) return errormsg.run(bot, message, args, 3, "Unspecified value")
             for(i = 2 + 1; i < args.length; i++) {
                 args[2] += ' ' + args[i];
             }
@@ -77,7 +76,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                 message.member.removeRole(rolecollec.id).then(() => {
                     message.channel.send(`${message.author.username}'s role named \`${rolecollec.name}\` was removed from them.`)
                 }).catch((err) => {
-                    message.channel.send(`An error occured while trying to remove ${message.author.username}'s role.`)
+                    message.channel.send(`An error occured while trying to remove ${message.author.username}'s role from them.`)
                     console.log(err)
                 })
             } else { // If the user has the role on them
@@ -91,11 +90,19 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             break;
 
         default:
-            message.channel.send(`\`Error - Unspecified value!\`\nCommand usage: \`${prefix}er [create | delete | colour | name | t]\``);
+            errormsg.run(bot, message, args, "a", `\`Unspecified value!\`\nCommand Usage: \`${prefix}${this.config.command[0]}${this.config.helpg}\``);
             break;
     }
 }
 
 module.exports.config = {
-    command: "er"
+    command: ["er", "editrole", "e-r", "edit-role"],
+    permlvl: "RoleChange",
+    help: ["Role Modify", "Create, edit, and delete your own custom role.",
+            "RoleModify", "create [hex-colour] [name]", "Creates a custom role with that colour and name, then gives it to you. Doesn't work if you already have one.",
+            "RoleModify", "[colour|color] [hex-colour]", "Edits your custom role to have that new colour.",
+            "RoleModify", "name [name]", "Edits your custom role to have that new name.",
+            "RoleModify", "t", "Toggles between you having your role and not having your role.",
+            "RoleModify", "delete", "Deletes your custom role."],
+    helpg: "er [create | delete | colour | name | t]"
 }

@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // Check if they have admin or higher permissions
-    if(!hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
+module.exports.run = async (bot, message, args) => {
     if(!message.guild.me.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send(`Could not ban user ${mentionsun} as the bot has a lack of permissions.\n\`Required permission: Ban User\``);
 
     let mentions = message.mentions.members.first(); // Get the mentioned person
@@ -11,7 +9,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     if(mentions) usercollection = bot.users.find(user => user.id == mentions.id) // If there is a mentioned person, set usercollection to be the retrieved user collection
     else if(bot.users.find(user => user.id === args[1])) usercollection = bot.users.find(user => user.id == args[1]) // Otherwise check if a userID was said, set usercollection to be the retrieved user collection
     else if(bot.users.find(user => user.username === args[1])) usercollection = bot.users.find(user => user.username === args[1]) // Otherwise check if a raw username was said, set... you get the point
-    else return message.channel.send(`\`Error - Invalid user to ban!\`\nCommand usage: \`${prefix}ban [@user] (reason)\``)
+    else return errormsg.run(bot, message, args, 1, "Invalid user to ban")
     mentionsid = usercollection.id
     mentionsun = usercollection.username
     
@@ -52,5 +50,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "ban"
+    command: ["ban", "b"],
+    permlvl: "Admin",
+    help: ["Admin", "Ban a user for a specified reason.",
+            "Admin", "[mention | userID | username] (reason)", "Ban a user and tell them. If a reason is specified, the user is told and that reason is used in the logchannel.",
+            "Admin", "[mention | userID | username] s (reason)", "Softbans a user. Same as above but they aren't notified."]
 }

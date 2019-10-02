@@ -1,17 +1,15 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // Check if they have mod or higher permissions
-    if(!hasMod && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
-    if(!message.guild.me.hasPermission(["KICK_MEMBERS", "ADMINISTRATOR"])) return message.channel.send('Could not kick user as the bot has a lack of permissions.\n\`Required permission: Kick User\`');
+module.exports.run = async (bot, message, args) => {
+   if(!message.guild.me.hasPermission(["KICK_MEMBERS", "ADMINISTRATOR"])) return message.channel.send('Could not kick user as the bot has a lack of permissions.\n\`Required permission: Kick User\`');
 
     let mentions = message.mentions.members.first(); // Get the mentioned person
     let usercollection; // Its a surprise tool that will help us later!
     if(mentions) usercollection = bot.users.find(user => user.id == mentions.id) // If there is a mentioned person, set usercollection to be the retrieved user collection
     else if(bot.users.find(user => user.id === args[1])) usercollection = bot.users.find(user => user.id == args[1]) // Otherwise check if a userID was said, set usercollection to be the retrieved user collection
     else if(bot.users.find(user => user.username === args[1])) usercollection = bot.users.find(user => user.username === args[1]) // Otherwise check if a raw username was said, set... you get the point
-    else return message.channel.send(`\`Error - Invalid user to kick!\`\nCommand usage: \`${prefix}kick [@user] (reason)\``) // If none of the above, give an error
+    else return errormsg.run(bot, message, args, 1, "Invalid user to kick") // If none of the above, give an error
     mentionsid = usercollection.id
     mentionsun = usercollection.username
 
@@ -54,5 +52,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "kick"
+    command: ["kick", "k"],
+    permlvl: "Mod",
+    help: ["Mod", "Kick a user for a specified reason.",
+            "Mod", "[mention | userID | username] (reason)", "Kick a user and tell them. If a reason is specified, the user is told and that reason is used in the logchannel.",
+            "Mod", "[mention | userID | username] s (reason)", "Softkicks a user. Same as above but they aren't notified."]
 }

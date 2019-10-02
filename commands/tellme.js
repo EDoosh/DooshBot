@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, usedcmd) => {
+module.exports.run = async (bot, message, args) => {
     if(args[1]) { // If there is a second argument
         let mentionedmember; // Set variables
         let tellmenum;
@@ -15,11 +15,11 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
                     args[1] += ' ' + args[i];
                 }
             } else { // If there is nothing to evaluate, say so.
-                return message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+                return errormsg.run(bot, message, args, 1, "Unspecified thing to evaluate")
             }
         } else if (bot.users.find(user => user.username === args[1])) { // If a user is mentioned by name...
             // Make sure there is something to evaluate
-            if(!args[2]) return message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+            if(!args[2]) return errormsg.run(bot, message, args, 1, "Unspecified thing to evaluate")
             mentionedmember = args[1] // Set mentioned member to be the username
             memberid = bot.users.find(user => user.username === args[1]).id // MemberID is the users ID
             args[1] = args[2] // Combine everything after the mention to evaluate it.
@@ -28,7 +28,7 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             }
         } else if (bot.users.find(user => user.id === args[1])) { // If there is a user mentioned by ID...
             // Make sure there is something to evaluate
-            if(!args[2]) return message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+            if(!args[2]) return errormsg.run(bot, message, args, 1, "Unspecified thing to evaluate")
             mentionedmember = bot.users.find(user => user.id == args[1]).username; // Set mentioned member to username by finding by ID
             memberid = args[1] // MemberID is the users ID
             args[1] = args[2] // Combine everything after the mention to evaluate it.
@@ -52,10 +52,14 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
         }
         message.channel.send(`**${mentionedmember}** scored a **${tellmenum}/10** for **${args[1]}**!`) // Show the member
     } else { // If there isn't an argument 1, show error
-        message.channel.send('`Error - Unspecified input to evaluate!`\nCommand usage: `' + prefix + 'tellme (@user) [thing]`');
+    errormsg.run(bot, message, args, 2, "Unspecified thing to evaluate");
     }
 }
 
 module.exports.config = {
-    command: "tellme"
+    command: ["tellme", "tm"],
+    permlvl: "All",
+    help: ["Fun", "Tells you something about someone on a scale of 1-10. Stays permanent across all servers, everywhere.",
+            "All", "[mention | userID | username] [thing]", "Tells you something about that person on a scale of 1-10.",
+            "All", "[thing]", "Tells you something about yourself on a scale of 1-10!"]
 }

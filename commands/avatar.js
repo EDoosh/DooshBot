@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
+module.exports.run = async (bot, message, args) => {
     let embed = new Discord.RichEmbed() // Make a new embed.
     let mentions = message.mentions.members.first(); // Get the mentioned person
     let usera = '' // Its a surprise tool that will help us later!
@@ -21,5 +21,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "avatar"
+    command: ["avatar", "av"],
+    permlvl: "All",
+    help: ["Fun", "Get the avatar of a user.",
+            "All", "", "Get your own avatar.",
+            "All", "[mention | userID | username]", "Get the avatar of that user."]
 }

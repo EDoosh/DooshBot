@@ -8,7 +8,7 @@ const newsapi = new NewsAPI(fs.readFileSync('tokennewsapi.txt').toString())
 // CREDIT TO u/KingCrowley0
 // https://www.reddit.com/r/Discord_Bots/comments/9khght/pulling_random_images_from_subreddits_js/
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
+module.exports.run = async (bot, message, args) => {
     let articles;
     let randomnumber;
 
@@ -70,5 +70,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "news"
+    command: ["news"],
+    permlvl: "All",
+    help: ["Fun", "Get a news article.",
+            "All", "", "Send a random top headline to the channel.",
+            "All", "[search-term]", "Send one of the top 20 articles that match that search term from the past week."]
 }

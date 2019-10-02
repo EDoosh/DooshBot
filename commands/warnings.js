@@ -1,16 +1,13 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // Check if they have mod or higher permissions
-    if(!hasMod && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
-
+module.exports.run = async (bot, message, args) => {
     let mentions; // Make mentions exist with nothing in it.
     if(message.mentions.members.first()) mentions = message.mentions.members.first().id // If there is a mention, get their id and put it in mentions
     else if(bot.users.find(user => user.id == args[1])) mentions = args[1] // If there is a valid user ID, get their ID and put it in mentions
     else if(bot.users.find(user => user.username === args[1])) mentions = bot.users.find(user => user.username === args[1]).id // If a name was said, get their ID
     // If neither of the above, throw error
-    else return message.channel.send('`Error - Unspecified member to check warnings of!`\nCommand usage: `' + prefix + 'warnings [@user] [list | deleteid | clear | count] (warn to delete) (reason)`');
+    else return errormsg.run(bot, message, args, "a", `\`Unspecified member!\`\nCommand Usage: \`${prefix}${this.config.command[0]}${this.config.helpg}`);
     
     let mentionsun = bot.users.find(user => user.id == mentions).username; // Make mentionsun (Mentions username) to be the found username of the userID
     switch(args[2]){ // Make it select from the second argument, or the one they want to check.
@@ -41,9 +38,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             let fnowid = await db.get(`warns_${mentions}_${message.guild.id}.amount`); // Get the number of warns they have
             if(fnowid === null || fnowid === 0) return message.channel.send("This user has no warn history!") // If its none, throw error
             // If the ID to delete isn't a number, throw error
-            if(isNaN(args[3])) return message.channel.send('`Error - Bad ID!`\nCommand usage: `' + prefix + 'warnings [@user] deleteid [warn to delete] (reason)`');
+            if(isNaN(args[3])) return errormsg.run(bot, message, args, 3, "That ID isn't even a number");
             // If the ID to delete is larger than the number they have, or smaller than 1, throw error
-            if(args[3] > fnowid || args[3] <= 0) return message.channel.send('`Error - Bad ID!`\nCommand usage: `' + prefix + 'warnings [@user] deleteid [warn to delete] (reason)`');
+            if(args[3] > fnowid || args[3] <= 0) return errormsg.run(bot, message, args, 3, "Bad ID");
 
             let reasons = await db.get(`warns_${mentions}_${message.guild.id}.reasons`); // Get all the reasons they were warned
             let times = await db.get(`warns_${mentions}_${message.guild.id}.times`); // Get all the times they were warned
@@ -105,12 +102,19 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
             break; // Exit the case
 
         default: // If none of the above, send an error
-            message.channel.send('`Error - Unspecified argument!`\nCommand usage: `' + prefix + 'warnings [@user] [list | deleteid | clear | count] (warn to delete) (reason)`');
+            errormsg.run(bot, message, args, "a", `\`Unspecified argument!\`\nCommand Usage: \`${prefix}${this.config.command[0]}${this.config.helpg}`)
             break;
     }
 
 }
 
 module.exports.config = {
-    command: "warnings"
+    command: ["warnings", "warns", "ws"],
+    permlvl: "Mod",
+    help: ["Mod", "Clear, Delete, List, and Count the number of warns a user has.",
+            "Mod", "[mention | userID | username] list", "List all the warns a user has.",
+            "Mod", "[mention | userID | username] count", "Display the number of warns a user has.",
+            "Admin", "[mention | userID | username] deleteID [warnID] (reason)", "Delete a warn by its warnID. If reason is specified, use that in logchannel.",
+            "Admin", "[mention | userID | username] clear", "Clear all the warns a user has."],
+    helpg: "[mention | userID | username] [list | count | deleteID | clear]"
 }

@@ -2,7 +2,6 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const db = require('quick.db');
-const send = require('quick.hook');
 const fs = require('fs');
 
 // Invite link:
@@ -10,48 +9,58 @@ const fs = require('fs');
 
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
-const NAME = 'DooshBot'; // Set name in case I wan't to change it later
-const VERSION = 'Beta 1.0.0'; // Same with version. 
+global.NAME = 'DooshBot'; // Set name in case I want to change it later
+global.VERSION = 'Beta 2.0.0'; // Same with version. 
 
 // Default settings. 
-let prefix = "-=";
-let adminrole = [];
-let modrole = [];
-let rmrole = [];
-let logChannel = '';
-const usedcmd = new Set();
+global.prefix = "-=";
+global.adminrole = [];
+global.modrole = [];
+global.rmrole = [];
+global.useallcmds = [];
+global.logChannel = '';
+global.usedcmd = new Set();
 
-const premiummembers = [
+global.useallcmds = [
+	'267723762563022849', // Me
+	'189125691504066561', // Finn
+	'274972137092284416' // Kelley
+] 
+
+global.premiummembers = [
 	'267723762563022849', // Me
 	'189125691504066561', // Finn
 	'274972137092284416' // Kelley
 ]
-const premiumservers = [
+global.premiumservers = [
 	'619704310615506955', // DooshBot (Mine)
 	'469048258304671745' // Team Optimus (Mine)
 ]
 
-
-// Load in commands from Discord Bot/Commands
+//command system   THABK YOU SPUTNIX FOR THIS
 bot.commands = new Discord.Collection()
-fs.readdir('./commands/', (err, files) => {    // Set directory to look for stuff in to [localfolder]/commands
-	if(err) console.error(err);    // If error, print
+global.commandList = []
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+for (const file of commandFiles) {
+	console.log(`Command ${file} loading...`);
+  	const commande = require(`./commands/${file}`);
+  	// set a new item in the Collection
+  	// with the key as the command name and the value as the exported module
+  	for (const n of commande.config.command) {
+    	bot.commands.set(n, commande);
+  	}
+	let names = commande.config.command
+  	let string = `${names.join(', ')}`
+  	global.commandList.push(string)
+}
+console.log(`Loaded ${commandFiles.length} commands and ${bot.commands.array().length} aliases!`)
 
-	var jsfiles = files.filter(f => f.split('.').pop() === 'js');    // Get all files in there, add to jsfiles array, then split & remove the .js at the end
-	if(jsfiles.length <= 0) { return console.log('No commands found')}    // If there's no commands, say that
-	else{console.log(jsfiles.length + ' commands found.')}    // Otherwise show how many there are
+// Error message
+global.errormsg = bot.commands.get(`errormessage-dontuse`)
 
-	jsfiles.forEach((f, i) => {    // For every file...
-		var cmds = require(`./commands/${f}`);    // Set cmds to the directory of the file
-		console.log(`Command ${f} loading...`);    // Say its loading it
-		bot.commands.set(cmds.config.command, cmds);    // idk
-	})
-	console.log('Startup Complete')    // Say its complete
-	
-})
 
 // Whenever the bot is added to a server
-bot.on('guildCreate', guild => {
+bot.on('guildCreate', async guild => {
 	let channelID;
     let channels = guild.channels;
     channelLoop:
@@ -61,17 +70,32 @@ bot.on('guildCreate', guild => {
             channelID = c[0];
             break channelLoop;
         }
-    }
+	}
+
+	//   Prefix
+	let fprefixgc = await db.fetch(`prefix_${guild.id}`);
+	if (fprefixgc === null) prefix = "-=";
+	else prefix = fprefixgc;
 
     let channel = bot.channels.get(guild.systemChannelID || channelID);
-	channel.send(`Thanks for inviting this bot! \nI'd recommend setting up the permissions and such for the bot first.\nTo get started however, if you want the full commands of the bot, use \`-=help\`\nFirstly, use \`-=modify mod-role (role name)\` to let that role have mod-role permissions.\nSecondly, use \`-=modify admin-role (role name)\` to let that role have admin-role permissions.\nUse \`-=plvl kick (level)\` to set the amount of warns required to kick someone.\nSame goes for \`-=plvl ban (level)\` with bans.\n\`-=plvl notify (level)\` will set the warns required to notify you they are getting close to being kicked or warned or whatever you want.\nLastly, \`-=modify log-channel (#channel)\` will let you set the logging channel.\nThank you for choosing to invite ${NAME}! If you face issues, please DM 'EDoosh#9599' or join the invite link with \`-=info\`.`);
+	channel.send(`Thank you for inviting ${NAME} to the server!\nI would highly recommend looking through the setup guide to initialise your bot for the server. Use \`${prefix}help c s\` to get started!`);
 })
 
 // WHEN THE BOT IS ONLINE
 bot.on('ready', () =>{
 	console.log('ONLINE');
-	console.log(`Bot has started, with ${bot.users.size} users, in ${bot.channels.size} channels of ${bot.guilds.size} guilds.`);
+
+	let botontime = new Date();
+	let bothours = botontime.getHours()
+	let ampm = "am"
+	if(bothours > 12) bothours -= 12 ; ampm = "pm";
+
+	let botont = `${botontime.getDate()}-${(botontime.getMonth()+1)}-${botontime.getFullYear()} ${bothours}:${botontime.getMinutes()}:${botontime.getSeconds()}${ampm}`
+
+	console.log(`${botont}   -   Bot has started, with ${bot.users.size} users, in ${bot.channels.size} channels of ${bot.guilds.size} guilds.`);
 });
+
+
 
 // WHEN A MESSAGE IS SENT IN A GUILD
 bot.on('message', async message => {
@@ -88,7 +112,7 @@ bot.on('message', async message => {
 			usedcmd.add(message.author.id); // If they havent used one recently, add them to recent list
 			setTimeout(() => {usedcmd.delete(message.author.id)}, 5000); // After 5 seconds remove them.
 		}
-		
+
 		// GET THE SETTINGS FROM THE DATABASE ABOUT THE SERVER
 		//   Adminrole
 		let fadmrole = await db.get(`adminrole_${message.guild.id}`);
@@ -105,35 +129,35 @@ bot.on('message', async message => {
 		else rmrole = [];
 		//   LogChannel
 		let flc = await db.get(`logChannel_${message.guild.id}`);
-		if (flc != null) logChannel = bot.channels.get(flc);
+		if (flc != null && flc != 0) logChannel = bot.channels.get(flc);
 		else logChannel = 0;
-		//   USEALLCMDS
-		let useallcmdsgrab = await db.get(`useallcmds`);
-		let useallcmds = ''
-		if (useallcmdsgrab != null) useallcmds = useallcmdsgrab
-		else useallcmds = [267723762563022849]
-		db.set(`useallcmds`, useallcmds)
 
 		// Set message variables.
-		const guildmsg = message.guild;
-		const msgUsername = message.author.username;
-		const serverOwner = message.guild.owner.user.username;
-		const hasAdmin = message.member.roles.find(role => adminrole.includes(role.name));
-		const hasMod = message.member.roles.find(role => modrole.includes(role.name));
-		const hasRoleMod = message.member.roles.find(role => rmrole.includes(role.name));
-		const msgUserID = message.member.id;
+		global.guildmsg = message.guild;
+		global.msgUsername = message.author.username;
+		global.serverOwner = message.guild.owner.user.username;
+		global.hasAdmin = message.member.roles.find(role => adminrole.includes(role.name));
+		global.hasMod = message.member.roles.find(role => modrole.includes(role.name));
+		global.hasRoleMod = message.member.roles.find(role => rmrole.includes(role.name));
+		global.msgUserID = message.member.id;
 
 		// Get Time
 		let today = new Date();
 		let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-		let dateTime = date+' '+time;
+		global.dateTime = date+' '+time;
 
 		// Create arguments
 		const args = message.content.substring(prefix.length).split(' ');    // Create arguments array by cutting off the prefix then seperating the arguments into indexes by spaces
-		var cmd = bot.commands.get(args[0])    // Set cmd to the command to run it later if it exists in the Discord 'bot.commands' Collection we set earlier
-		// Run the command with the prefix located in Discord Bot/commands if it exists.
-		if(cmd) cmd.run(bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd);
+		var cmd = bot.commands.get(args[0].toLowerCase())    // Set cmd to the command to run it later
+		if(!cmd) return // If it isnt a command, just return
+		if(cmd.config.permlvl == "RoleChange" && !hasRoleMod && !hasAdmin && !useallcmds.includes(msgUserID) && msgUsername != serverOwner) return message.channel.send('`Error - Requires Role Change permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify role-modify [role name]`');
+		if(cmd.config.permlvl == "Mod" && !hasMod && !hasAdmin && !useallcmds.includes(msgUserID) && msgUsername != serverOwner) return message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
+		if(cmd.config.permlvl == "Admin" && !hasAdmin && !useallcmds.includes(msgUserID) && msgUsername != serverOwner) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
+		if(cmd.config.permlvl == "Trusted" && !useallcmds.includes(msgUserID)) return message.channel.send('Error - Requires EDoosh or other approved members to run this command! Wait, how did you find out about it..?');
+		if(cmd.config.permlvl == "EDoosh" && msgUserID != 267723762563022849) return message.channel.send('Error - Requires EDoosh to run this command! Wait, how did you find out about it..?');
+		// Run the command
+		cmd.run(bot, message, args);
 	}
 })
 
@@ -141,61 +165,35 @@ bot.login(token);
 
 
 
-// message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
-// message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
-// message.channel.send('`Error - Requires Role Change permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify role-modify [role name]`');
-// message.channel.send('Error - Requires EDoosh or other approved members to run this command! Wait, how did you find out about it..?');
-// message.channel.send('Error - Requires EDoosh to run this command! Wait, how did you find out about it..?');
-
-
-
-// for(i = combineTo + 1; i < args.length; i++) {
-// 	args[combineTo] += ' ' + args[i];
-// }
-
-
-
-// let mentions = message.mentions.members.first(); // Get the mentioned person
-// let usercollection; // Set the usercollection to blank
-// if(mentions) usercollection = bot.users.find(user => user.id == mentions.id) // If there is a mentioned person, set usercollection to be the retrieved user collection
-// else if(bot.users.find(user => user.id === args[1])) usercollection = bot.users.find(user => user.id == args[1]) // Otherwise check if a userID was said, set usercollection to be the retrieved user collection
-// else if(bot.users.find(user => user.username === args[1])) usercollection = bot.users.find(user => user.username === args[1]) // Otherwise check if a raw username was said, set... you get the point
-// else usercollection = message.author // If no other checks were passed, set usercollection to the author's collection
-// mentionsid = usercollection.id
-// mentionsun = usercollection.username
-
-
-// message.channel.send(`\`Error - !\`\nCommand usage: \`${prefix} \``)
-// if(logChannel != 0) logChannel.send()
-
 
 //   MISC
 // Fix -=modify modrole and others to use role IDs & names
-// ALIASES
+// When a user joins, check if theyve had any kicks, warns, or mutes in the server before
+// When a user leaves, check if they had any warns or mutes present when they left
+// Every minute, check through the timing of everything and if theyve expired
+// Steal YAGPDBs idea of self assignable roles.
 
 //   ME
 
 //   TRUSTED
-// -=quote globaladd [messageID] - Get the authors's nickname of the message, the date, the message ID, and the contents, then add it to a DB. Make amount increment too.
-// -=quote globalremove [QuoteID] - Remove the quote by the quote's ID 
 
 //   ADMIN
-// -=modify quote-channel - Sends quotes to a channel.
-// -=jl ar - Autorole on member join
+// -=jl ar - Autoroles on member join
 // -=jl mj - Message on member join
 // -=jl ml - Message on member leave
 // -=modify jl-channel - Changes joinleave channel.
 
 //   MODS
-// -=quote add [messageID] - Same as trusted, just for the server only
-// -=quote remove [QuoteID] - Same as trusted, just for the server only
 
 //   ALL
+// -=xkcd (ID) - Gets an xkcd comic
+// -=meme - Gets a random meme from a channel called meme in Dooshbot Discord
+// -=br (Contents) - Reports a bug in the bot.
 
 
 // Plans for the distant future
 // - Expiring warns. Modify segment where admins can set how long the default is. You have access to days and months to make it last for.
 // - Mute. Reason and length. Set auto mute warn lvl. Mute channels on creation, as well as on join to a guild. Allow admins to set default length, as well as length of mute for plvl mutes.
-// - Sharting. Sharding
+// - Sharding
 // - Poll automatically announces winning after set period
 // - Music features?

@@ -1,22 +1,19 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // Check if they have mod
-    if(!hasMod && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
-    
+module.exports.run = async (bot, message, args) => {
     let mentionsid; // Set mentionsid to nothing
     if(message.mentions.members.first()) mentionsid = message.mentions.members.first().id // If there is a mention, set mentionsid to the mentioned's id
     else if(message.guild.members.find(user => user.id === args[1])) mentionsid = args[1] // Otherwise, check if there is a person with that ID and set mentionsid to that
     else if(bot.users.find(user => user.username === args[1])) mentionsid = bot.users.find(user => user.username === args[1]).id // If a name was said, get their ID
-    else return message.channel.send('`Error - Unspecified member to warn!`\nCommand usage: `' + prefix + 'warn [@user] (amount of warns) (reason)`'); // If neither of the above, throw error
+    else return errormsg.run(bot, message, args, 1, "Unspecified member to warn"); // If neither of the above, throw error
     mentions = message.guild.members.find(user => user.id == mentionsid); // Set mentions to the user collection of the member with the mentionsid
 
     let mentionsun = bot.users.find(user => user.id == mentions.id).username; // Get their username too.
     // If they have mod and not admin, and they're trying to warn a mod, disallow it.
-    if(mentions.roles.find(role => modrole.includes(role.name)) && hasMod && !hasAdmin) return message.channel.send("`Error - Don't try warning a fellow moderator!`");
+    if(mentions.roles.find(role => modrole.includes(role.name)) && hasMod && !hasAdmin) return errormsg.run(bot, message, args, 1, "Don't try warning a fellow moderator");
     // Otherwise if they have admin disallow it entirely.
-    if(mentions.roles.find(role => adminrole.includes(role.name))) return message.channel.send("`Error - Don't try warning a fellow admin!`");
+    if(mentions.roles.find(role => adminrole.includes(role.name))) return errormsg.run(bot, message, args, 1, "Don't try warning a fellow admin");
     // Allow a maximum of 20 warns at once to prevent database errors.
     if(!isNaN(args[2]) && args[2] > 20) return message.channel.send("Too many warns! Maximum is 20 at once.")
     // Set reason and loopnum to defaults.
@@ -125,5 +122,8 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "warn"
+    command: ["warn", "w"],
+    permlvl: "Mod",
+    help: ["Mod", "Warn a user for a specified reason.",
+            "Mod", "[mention | userID | username] (warn-count) (reason)", "Warn a user.\nIf a warn-count is entered, they are warned that many times.\nIf a reason is specified, that is used in logchannel.\nIf they reach a level set in plvl, they are kicked/banned/notified."]
 }

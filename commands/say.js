@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // Make sure they have UseAllCmds
-    if(!useallcmds.includes(msgUserID)) return message.channel.send('Error - Requires EDoosh or other approved members to run this command! Wait, how did you find out about it..?');
+module.exports.run = async (bot, message, args) => {
     if(!args[1]) return message.channel.send('Well give me something to say man!') // If there is nothing to say or no guild ID, return error
 
     if(bot.channels.find(channel => channel.id === args[1])){ // If there is a channel ID in first arg...
@@ -26,5 +24,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "say"
+    command: ["say"],
+    permlvl: "Trusted",
+    help: ["Trusted", "Make the bot send a message.",
+            "Trusted", "[message]", "Make the bot send a message to the current channel.",
+            "Trusted", "[channelID] [message]", "Make the bot send a message to the channel ID."]
 }

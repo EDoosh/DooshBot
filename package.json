@@ -11,7 +11,12 @@
   "dependencies": {
     "better-sqlite3": "^5.4.3",
     "discord.js": "^11.5.1",
+    "is-image-url": "^1.1.8",
+    "libsodium-wrappers": "^0.7.5",
     "newsapi": "^2.4.0",
+    "node-fetch": "^2.6.0",
+    "node-opus": "^0.3.2",
+    "opusscript": "0.0.7",
     "quick.db": "^7.0.0-b22",
     "quick.hook": "^1.5.1",
     "snekfetch": "^4.0.4"

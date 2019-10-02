@@ -2,15 +2,30 @@ const Discord = require('discord.js');
 const db = require('quick.db');
 
 module.exports.run = async (bot, message, args) => {
-    message.channel.send('Hmmm...')
+    if(!args[1]) return errormsg.run(bot, message, args, 1, "Missing argument")
+    for(i = 1 + 1; i < args.length; i++) {
+        args[1] += ' ' + args[i];
+    }
+
+    // For every channel in th bot updates thingie
+    // Get the channel
+    // Send the message
+    // Catch if it didnt send
+    let allchannels = await db.get(`botupChannel.channel`)
+    for(const channelid of allchannels) {
+        let sendto = await bot.channels.find(channel => channel.id === channelid)
+        sendto.send(args[1]).catch((err) => {
+            console.log(`Failed to send announcement message to channel ${channelid}.`)
+            console.log(err)
+        })
+    }
 }
 
 module.exports.config = {
-    command: ["example-dont-use"],
-    permlvl: "All | RoleChange | Mod | Admin | Trusted | EDoosh",
-    help: ["Bot | Fun | Role Modify | Mod | Admin | Trusted | EDoosh | Other", "ShortDesc",
-            "All | RoleModify | Mod | Admin | Trusted | EDoosh | DISABLED", "CommandUsageExcludingName", "Command description"],
-    helpg: "generalCommandSyntax"
+    command: ["announce"],
+    permlvl: "EDoosh",
+    help: ["EDoosh", "Announce something.",
+            "EDoosh", "[announcement text]", "Announce something to everyone"]
 }
 
 

@@ -1,11 +1,9 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // If it isnt an admin, show error.
-    if(!hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
+module.exports.run = async (bot, message, args) => {
     // If there isn't a config to edit, show error
-    if(!args[1]) return message.channel.send('`Error - Unspecified config to edit!`\nCommand usage: `' + prefix + 'plvl [kick | ban | notify] [warn count]`');
+    if(!args[1]) return errormsg.run(bot, message, args, 1, "Unspecified config");
     if(!args[2]){ // If the user wants the levels its currently set to
         switch(args[1]){ // Sets case search to first argument
             case 'kick': // If they want to get the kick level...
@@ -42,5 +40,10 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "plvl"
+    command: ["plvl", "permlvl", "permslvl", "permissionslvl", "plevel", "permlevel", "permslevel", "permissionslevel"],
+    permlvl: "Admin",
+    help: ["Admin", "The amount of warns required to kick/ban the user, or notify in the logchannel.",
+            "Admin", "[kick | ban | notify]", "Get the amount of warns required to kick/ban the user, or notify in the logchannel.",
+            "Admin", "[kick | ban | notify] [warn-count]", "Set the amount of warns required to kick/ban the user, or notify in the logchannel.",
+            "Admin", "[kick | ban | notify] 0", "Disable the amount of warns required to kick/ban the user, or notify in the logchannel.",]
 }

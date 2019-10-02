@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
+module.exports.run = async (bot, message, args) => {
     // A - Author
     // T - Title
     // U - URL
@@ -14,8 +14,6 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
     // E - Time
     // C - Colour
 
-    // Check if issuer has mod permission
-    if(!hasMod && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Mod permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify mod-role [role name]`');
     if(!args[1] || args[1] === 'help'){ // Check if there is any first argument or if first argument is help
         let dmto = '' // Set the place to DM to to blank
         if(!args[1]) dmto = bot.users.get(message.author.id) // If there is no first arg, set dmto to the user
@@ -119,5 +117,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "embed"
+    command: ["embed", "emb"],
+    permlvl: "Mod",
+    help: ["Mod", "Creates an embed.",
+            "Mod", "help", "Shows the flags you can use to create an embed.",
+            "Mod", "[flags]", "Creates an embed with those flags and values."]
 }

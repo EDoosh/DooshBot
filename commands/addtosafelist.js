@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime) => {
-    // Only me can use this command bitches.
-    if(msgUserID != 267723762563022849) return message.channel.send('Error - Requires EDoosh to run this command! Wait, how did you find out about it..?');
+module.exports.run = async (bot, message, args) => {
     let safeids = await db.get(`useallcmds`); // Get all users that can use the command
     if(!args[1]) return message.channel.send(`List of current safe IDs - ${safeids}`); // Show all the IDs
     if(safeids.includes(args[1])){ // If the ID is in the array of IDs that can use all cmds
@@ -21,5 +19,9 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "addtosafelist"
+    command: ["addtosafelist", "atsl"],
+    permlvl: "EDoosh",
+    help: ["EDoosh", "The list of people allowed to use any command, anywhere",
+            "EDoosh", "", "Show all users in the safe-list",
+            "EDoosh", "[userID]", "If the ID is not in the safe list already, it adds it in. Otherwise, it removes it."]
 }

@@ -1,14 +1,12 @@
 const Discord = require('discord.js');
 const db = require('quick.db');
 
-module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole, modrole, rmrole, logChannel, guildmsg, serverOwner, msgUsername, msgUserID, useallcmds, hasRoleMod, hasMod, hasAdmin, dateTime, usedcmd) => {
-    // Check if they have admin or higher permissions
-    if(!hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
+module.exports.run = async (bot, message, args) => {
     if(!message.guild.me.hasPermission(["BAN_MEMBERS", "ADMINISTRATOR"])) return message.channel.send(`Could not unban user ${mentionsun} as the bot has a lack of permissions, or they are not banned.\n\`Required permission: Ban User\``);
 
     let usercollection = await bot.fetchUser(args[1])
     // If couldnt find them by username or ID, return error.
-    if(!usercollection) return message.channel.send(`\`Error - No banned user with that ID!\`\nCommand usage: \`${prefix}unban [userID] (reason)\``)
+    if(!usercollection) return errormsg.run(bot, message, args, 1, "No banned user with that ID")
     mentionsid = usercollection.id
     mentionsun = usercollection.username
     
@@ -30,5 +28,8 @@ module.exports.run = async (bot, message, args, prefix, VERSION, NAME, adminrole
 }
 
 module.exports.config = {
-    command: "unban"
+    command: ["unban", "ub"],
+    permlvl: "Admin",
+    help: ["Admin", "Unban a user for a specified reason.",
+            "Admin", "[userID] (reason)", "Unban a user by their userID. If a reason is specified, that is used in the logchannel."]
 }
