@@ -18,7 +18,7 @@ module.exports.config = {
 
 //    ERROR MESSAGE
 // errormsg.run(bot, message, args, IDOfTheHelpCommand, "Errormsg")
-// errormsg.run(bot, message, args, "a", `\`reason!\`\nCommand Usage: \`${prefix}${this.config.command[0]}${this.config.helpg}\``)
+// errormsg.run(bot, message, args, "a", `\`reason!\`\nCommand Usage: \`${prefix}${this.config.command[0]} ${this.config.helpg}\``)
 
 
 //    LOG CHANNEL

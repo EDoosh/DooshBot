@@ -20,7 +20,6 @@ module.exports.run = async (bot, message, args) => {
         quoteid = quotes.c.indexOf(args[a]);
     } else { // Else if the user wants random
         quoteid = Math.floor(Math.random() * quotes.c.length - 1) + 1
-        console.log(quoteid)
     }
 
     // Get the channel the message was sent in

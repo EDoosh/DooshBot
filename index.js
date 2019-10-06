@@ -10,7 +10,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 global.NAME = 'DooshBot'; // Set name in case I want to change it later
-global.VERSION = 'Beta 2.0.0'; // Same with version. 
+global.VERSION = 'Beta 2.1.0'; // Same with version. 
 
 // Default settings. 
 global.prefix = "-=";
@@ -81,6 +81,120 @@ bot.on('guildCreate', async guild => {
 	channel.send(`Thank you for inviting ${NAME} to the server!\nI would highly recommend looking through the setup guide to initialise your bot for the server. Use \`${prefix}help c s\` to get started!`);
 })
 
+
+// Send the join or leave message
+async function sendjlmessage(member, messagewhole, channel){
+	let mtosend = ''
+	let message = messagewhole.split(' ')
+    for(const word of message) {
+        switch(word) {
+            case '${username}':
+                mtosend += `${member.user.username} `
+                break;
+            case '${mention}':
+                mtosend += `<@${member.user.id}> `
+                break;
+            case '${discrim}':
+                mtosend += `${member.user.discriminator} `
+                break;
+            case '${tag}':
+                mtosend += `${member.user.tag} `
+                break;
+            case '${id}':
+                mtosend += `${member.user.id} `
+                break;
+            case '${servername}':
+                mtosend += `${member.guild.name} `
+                break;
+            case '${prevwarns}':
+                let warns = await db.get(`warns_${member.user.id}_${member.guild.id}.amount`)
+                if (warns == null || isNaN(warns)) warns == '0'
+                mtosend += `${warns} `
+                break;
+            default:
+                mtosend += `${word} `
+                break;
+        }
+    };
+    channel.send(mtosend)
+}
+
+// Join Leave message maker
+async function jlmessage(member, type, joinleave){
+	//  Get the database for the server and type
+	let jl = await db.get(`jl_${member.guild.id}_${type}_${joinleave}`)
+	//  For db.all as i {
+	if (jl == null) return;
+	for(const i of jl.all){
+		if(i.channelid == '' || i.channelid == null) continue;
+		let channel = bot.channels.get(i.channelid)
+		let rndval = [[],[],[],[],[],[],[],[],[],[]]
+		for(j=0; j < i.text.length; j++){
+			rndval[i.rnd[j]].push(i.text[j])
+		}
+		for(j=0; j < rndval[0].length; j++){
+			sendjlmessage(member, rndval[0][j], channel)
+		}
+		for(j=1; j <= 9; j++){
+			if(rndval[j].length == 0) continue;
+			let rndnum = Math.floor(Math.random() * (rndval[j].length))
+			sendjlmessage(member, rndval[j][rndnum], channel)
+		}
+	}
+	//      Get the channel
+	//      For db.all[i].text as j {
+	//          (number rnd[j] resembles).push(j)
+	//      }
+	//      For 0.length as j {
+	//          run testing.js function code 
+	//      }
+	//      For 1 - 9 as j {
+	//          if(j.length == 0) return
+	//          random number from 0 to j.length - 1
+	//          run testing.js function code
+	//      }
+	//  }
+
+	// function testing.js code
+
+
+	// jl_${guildid}_${type}_${joinleave}, { all : [ { channelid : '', text : ['',''], rnd : [0,0], id : ['',''] }, {...} ], next : 0 }
+	//  db.all[i].text[j]
+}
+
+
+// Whenever a new person joins a server
+bot.on('guildMemberAdd', async member => {
+	// Autorole
+	let guild = member.guild
+	let type = (member.user.bot) ? 'bot' : "member"
+	let ar = await db.get(`ar_${guild.id}_${type}`)
+	if(ar != null) {
+		for(const roleid of ar){
+			member.addRole(roleid, `${type} auto-role.`).catch(async () => {
+				//   LogChannel
+				let flc = await db.get(`logChannel_${guild.id}`);
+				if (flc != null && flc != 0) logChannel = bot.channels.get(flc);
+				else logChannel = 0;
+
+				if(logChannel != 0) logChannel.send(`An issue occured while trying to perform autorole. Perhaps the bot does not have enough permissions, or the role has been deleted (${roleid})`);
+			})
+		}
+	}
+	// Message maker
+	let joinleave = 'join';
+	jlmessage(member, type, joinleave)
+})
+
+
+// Whenever a person leaves a server
+bot.on('guildMemberRemove', async member => {
+	let joinleave = 'leave';
+	let type = (member.user.bot) ? 'bot' : "member"
+	jlmessage(member, type, joinleave)
+})
+
+
 // WHEN THE BOT IS ONLINE
 bot.on('ready', () =>{
 	console.log('ONLINE');
@@ -136,9 +250,9 @@ bot.on('message', async message => {
 		global.guildmsg = message.guild;
 		global.msgUsername = message.author.username;
 		global.serverOwner = message.guild.owner.user.username;
-		global.hasAdmin = message.member.roles.find(role => adminrole.includes(role.name));
-		global.hasMod = message.member.roles.find(role => modrole.includes(role.name));
-		global.hasRoleMod = message.member.roles.find(role => rmrole.includes(role.name));
+		global.hasAdmin = message.member.roles.find(role => adminrole.includes(role.id));
+		global.hasMod = message.member.roles.find(role => modrole.includes(role.id));
+		global.hasRoleMod = message.member.roles.find(role => rmrole.includes(role.id));
 		global.msgUserID = message.member.id;
 
 		// Get Time
@@ -167,33 +281,40 @@ bot.login(token);
 
 
 //   MISC
-// Fix -=modify modrole and others to use role IDs & names
-// When a user joins, check if theyve had any kicks, warns, or mutes in the server before
-// When a user leaves, check if they had any warns or mutes present when they left
 // Every minute, check through the timing of everything and if theyve expired
 // Steal YAGPDBs idea of self assignable roles.
+// Level system
 
 //   ME
 
 //   TRUSTED
 
 //   ADMIN
-// -=jl ar - Autoroles on member join
-// -=jl mj - Message on member join
-// -=jl ml - Message on member leave
-// -=modify jl-channel - Changes joinleave channel.
+// Add mute option to jl message
+// -=plvl mute (warn count) - Mutes members automatically for the default amount of time
+// -=plvl default mute (minutes) - Default time to mute for if time is ommitted in -=mute
+// -=plvl default warn (days) - Default time to warn for if time is ommitted in -=warn
+// -=plvl muteon (t/f) - Enables mute. Creates muted role. Goes through all channels and makes mute unable to speak. If a channel is created and it is on, add mute role to it.
+// -=plvl serverlevels (t/f) - Enables server leveling
+// -=lvl clear (user)
 
 //   MODS
+// -=mute (mins) (s) (reason) - Mute someone for a reason. s makes it not DM them to tell them they are muted. Only works if muteon is true.
+// -=warn (days) (s) (reason) - Add days to warn
+// -=embed edit (...)
 
 //   ALL
+// -=memberinfo - Get information about someone.
 // -=xkcd (ID) - Gets an xkcd comic
 // -=meme - Gets a random meme from a channel called meme in Dooshbot Discord
 // -=br (Contents) - Reports a bug in the bot.
+// -=poll (hours)
+// -=lvl - Gets users level and rank
+// -=lvl top (page#) - Gets top 10
+// -=lvl g - Gets users global level and rank
+// -=lvl g top (page#) - Gets global top 10, updates every hour
 
 
 // Plans for the distant future
-// - Expiring warns. Modify segment where admins can set how long the default is. You have access to days and months to make it last for.
-// - Mute. Reason and length. Set auto mute warn lvl. Mute channels on creation, as well as on join to a guild. Allow admins to set default length, as well as length of mute for plvl mutes.
 // - Sharding
-// - Poll automatically announces winning after set period
 // - Music features?
