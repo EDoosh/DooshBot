@@ -124,7 +124,46 @@ module.exports.run = async (bot, message, args) => {
                     message.channel.send('The role `' + rmcol.name + '` now has Role Modify permission for this bot!'); // Say its been added
                 }
             }
-            break;      
+            break;
+            
+        case 'lr':
+        case 'levelroles': // Same structure as ModRole
+            combineArgs(3); // Combine everything after argument 3
+            if(!args[2]) { // If there isn't an argument 2
+                if(rmrole.length === 0) { // If there isn't anything in modrole, say so
+                    message.channel.send('No roles exist with role-modify permission in the bot!');
+                }else{ // If there is stuff in modrole, say the roles
+                    let rmmessage = [];
+                    for(i=0; i < rmrole.length; i++){
+                        let rmcol = message.guild.roles.find(x => x.id == rmrole[i])
+                        if(!rmcol) {rmmessage.push(`**DELETED ROLE** (${rmrole[i]})`); continue; }
+                        rmmessage.push(`${rmcol.name} (${rmrole[i]})`)
+                    }
+                    message.channel.send('Current roles with role-modify: ' + rmmessage.join(', '));
+                }
+            }else if(rmrole.includes(args[2])){ // If there is already that id in the modrole...
+                rmrole.splice(rmrole.indexOf(args[2]), 1); // Remove it from modrole
+                db.set(`rmrole_${message.guild.id}`, rmrole); // Set the new modrole into the database
+                message.channel.send('The role `' + args[2] + '` has been removed from Role Modify permissions for this bot!'); // Say its been removed
+            }else{
+                // Create collection of the role
+                let rmcol;
+                if(message.guild.roles.find(x => x.id == args[2])) rmcol = message.guild.roles.find(x => x.id == args[2])
+                else if(message.guild.roles.find(x => x.name == args[2])) rmcol = message.guild.roles.find(x => x.name == args[2])
+                // Check if there is a role. If not, throw error.
+                if(!rmcol) return message.channel.send('The role `' + args[2] + '` does not exist!');
+                // Remove by name
+                if(rmrole.includes(rmcol.id)) {
+                    rmrole.splice(rmrole.indexOf(rmcol.id), 1); // Remove it from modrole
+                    db.set(`rmrole_${message.guild.id}`, rmrole); // Set the new modrole into the database
+                    message.channel.send('The role `' + rmcol.name + '` has been removed from Role Modify permissions for this bot!'); // Say its been removed
+                } else {
+                    rmrole.push(rmcol.id); // Add it in to modrole
+                    db.set(`rmrole_${message.guild.id}`, rmrole); // Set the new modrole into the database
+                    message.channel.send('The role `' + rmcol.name + '` now has Role Modify permission for this bot!'); // Say its been added
+                }
+            }
+            break;  
 
         case 'lc':
         case 'log-channel': // If the user wants to edit the logchannel
