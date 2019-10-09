@@ -7,3 +7,4 @@ json.sqlite
 node_modules/
 bibletoken.txt
 commands/gdupdatenicks.js
+*.sqlite

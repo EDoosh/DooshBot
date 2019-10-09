@@ -279,7 +279,7 @@ bot.on('message', async message => {
 		}
 	}
 	recentlvl.add(message.author.id)
-	setTimeout(() => {recentlvl.delete(message.author.id)}, 150);
+	setTimeout(() => {recentlvl.delete(message.author.id)}, 15000);
 
 	if(message.content === 'getdbprefix') return message.channel.send(`The current DooshBot prefix is \`${prefix}\``); // If the user wants the prefix, give it to them dammit!		
 	if(!message.content.startsWith(prefix)) return;    // If message didn't start with the prefix or was sent by a bot, dont run next code
