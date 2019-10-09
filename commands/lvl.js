@@ -23,26 +23,29 @@ module.exports.run = async (bot, message, args) => {
     else user = message.author // If no other checks were passed, set usercollection to the author's collection
 
     if(args[a] == 'top' || args[a] == 't') {
+        if(type == 'server' && lvlon == false) return message.channel.send(`Server levelling for ${message.guild.name} is off.`)
         // Get the page number
         let pageno = (args[a+1]) ? args[a+1] : 1
         // Check if it is larger than the number of pages available. If so, throw error.
         if (pageno > Math.ceil(lvl.score.length / 10) || pageno < 1) return errormsg.run(bot, message, args, 2, "Too high of a page number")
 
         // Get the scores and sort them
-        let scores = lvl.score
-        let lvlscore = lvl.score
-        console.log(lvlscore)
+        let scores = lvl.score.slice(0)
+        var lvlscore = lvl.score.slice(0)
+        var lvlusers = lvl.user.slice(0)
         scores.sort(function(a, b){return b - a});
         // For all scores, find the index of the sorted score in lvl.score, then use that index to get the user and push that user's id into the users array
         let users = [];
         for(const s of scores){
-            users.push(lvl.user[lvl.score.indexOf(s)])
-            console.log(`s: ${s}  lvlscore: ${lvlscore}  Index: ${lvlscore.indexOf(s)}   ID: ${lvl.user[lvlscore.indexOf(s)]}`)
+            let index = lvlscore.indexOf(s)
+            users.push(lvlusers[index])
+            // Remove the user and the score so it doesn't repeat usernames.
+            await lvlusers.splice(index, 1)
+            await lvlscore.splice(index, 1)
         }
 
-        console.log(`Scores: ${scores}     Users: ${users}`)
 
-        let out = `:trophy:  **${message.guild.name}'s leaderboard**\n`
+        let out = (type == 'server') ? `:trophy:  **${message.guild.name}'s Leaderboard**\n` : `:trophy:  **Global Leaderboard**\n`
         // For all the users, 
         for(i = pageno * 10 - 10; i < (pageno * 10) && i < scores.length; i++){
             out += `\n> **${i+1}** `

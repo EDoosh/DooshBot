@@ -32,6 +32,9 @@ module.exports.run = async (bot, message, args) => {
                     `\n**${prefix}m qc [channel-mention]** - *Sets the channel that quotes will be sent in. Quotes are just messages that mods may find funny or informational, so they quote it and it'll be sent to that channel.*` +
                     `\n**${prefix}prefix [new-prefix]** - *I'd recommend only doing this if you need to set a new prefix due to clashing with other bots.*` +
                     `\n**${prefix}m rm [role-name]** - *Adds roles to the role-modify permission for the bot. Role Modify is a feature which allows members to create and edit their own roles with the bot.*` +
+                    `\n**${prefix}plvl sl true** - *Enables server levelling. If you don't want to be constantly spammed by level up messages, you can use the following.*` +
+                    `\n**${prefix}plvl lm (min lvl)** - *This makes it so that level messages aren't sent unless the minimum level is met.*`
+                    `\n**${prefix}m lr [level] [role-name]** - *This allows for roles to be added to a user if they reach that level on your server.*`
                     `\n\`If you have any more questions, or just know how to phrase what I say better, DM EDoosh#9599, or join the invite link with ${prefix}info\``)
 
                 //    ESSENTIAL

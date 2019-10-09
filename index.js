@@ -10,7 +10,7 @@ const fs = require('fs');
 // Startup variables
 const token = fs.readFileSync('token.txt').toString(); // Make it so any of you reading on GitHub don't steal my bot >:(
 global.NAME = 'DooshBot'; // Set name in case I want to change it later
-global.VERSION = 'Beta 2.1.0'; // Same with version. 
+global.VERSION = 'Beta 2.2.0'; // Same with version. 
 
 // Default settings. 
 global.prefix = "-=";
@@ -239,9 +239,6 @@ bot.on('message', async message => {
 			
 		await db.add(`lvl.score[${index}]`, 1)
 		lvlscore = parseInt(lvl.score[index]) + 1
-
-		console.log(`GLOBAL ${lvlscore} | ${message.author.username}`)
-
 		
 		if(lvltotal.includes(lvlscore)){
 			let newlvl = lvltotal.indexOf(lvlscore) + 1
@@ -274,7 +271,6 @@ bot.on('message', async message => {
 			// Set lvlserver to their score before the add, then add 1
 			lvlserver = lvlserver.score[indexserver] + 1
 
-			console.log(`SERVER ${lvlserver} | ${message.author.username}`)
 			if(lvltotal.includes(lvlserver)){
 				newlvl = lvltotal.indexOf(lvlserver) + 1
 				if(newlvl < minlvl) return;
@@ -382,9 +378,6 @@ bot.login(token);
 // -=embed edit (...)
 
 //   ALL
-// -=memberinfo - Get information about someone.
-// -=xkcd (ID) - Gets an xkcd comic
-// -=meme - Gets a random meme from a channel called meme in Dooshbot Discord
 // -=br (Contents) - Reports a bug in the bot.
 // -=poll (hours)
 

@@ -15,8 +15,8 @@ module.exports.run = async (bot, message, args) => {
         usera = message.author // Set usera to the author's collection
     }
     embed.setTitle(`${usera.username}'s Avatar`) // Set title of embed
-    embed.setDescription(usera.avatarURL) // Set description to be URL of their pfp
-    embed.setImage(usera.avatarURL) // Set Image to be of their pfp. Requires a URL so thats why it works
+    embed.setDescription(usera.displayAvatarURL) // Set description to be URL of their pfp
+    embed.setImage(usera.displayAvatarURL) // Set Image to be of their pfp. Requires a URL so thats why it works
     message.channel.send(embed) // Actually send the damn embed.
 }
 

@@ -19,6 +19,7 @@
     "opusscript": "0.0.7",
     "quick.db": "^7.0.0-b22",
     "quick.hook": "^1.5.1",
+    "request": "^2.88.0",
     "snekfetch": "^4.0.4"
   }
 }

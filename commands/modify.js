@@ -129,8 +129,38 @@ module.exports.run = async (bot, message, args) => {
         case 'lr':
         case 'levelroles': // Same structure as ModRole
             combineArgs(3); // Combine everything after argument 3
+
+            // Get lr roles
+            // -=m lr (lr.length == 0)  nothing exists with that
+            // -=m lr (otherwise)  Lvl __ Name __
+            // -=m lr _ __ (already exists) Remove and push
+            // -=m lr _ __ (new) Add and push
+
+            let lr = db.get(`lr_${message.guild.id}`)
+            // lvls & ids
+
+            if(!args[2]) { 
+                if(lr.lvls.length == 0) {
+                    message.channel.send(`No level roles exist within the bot!`)
+                } else {
+                    let lrmessage = [];
+                    for(i=0; i < lr.lvls.length; i++) {
+                        let lrcol = message.guild.roles.find(x => x.id == lr.ids[i])
+                        if(!lrcol) {lrmessage.push(`\n> Level ${lr.lvls[i]}\u2800⬥\u2800**DELETED ROLE** (${lr.ids[i]})`); continue; }
+                        lrmessage.push(`\n> Level ${lr.lvls[i]}\u2800⬥\u2800${lrcol.name} (${lrcol.id})`)
+                    }
+                    message.channel.send(`Current level roles:${lrmessage.join('')}`)
+                }
+            } else if (lr.ids.includes(args[3])) {
+                lr.ids.splice(lr.ids.indexOf(args[3]), 1)
+                lr.lvls.splice(lr.ids.indexOf(args[3]), 1)
+                db.set(`lr_${message.guild.id}.ids`, lr.ids);
+                db.set(`lr_${message.guild.id}.lvls`, lr.lvls);
+                message.channel.send(`The role \`${args[2]}\` has been removed from `)
+            }
+
             if(!args[2]) { // If there isn't an argument 2
-                if(rmrole.length === 0) { // If there isn't anything in modrole, say so
+                if(lr.length === 0) { // If there isn't anything in modrole, say so
                     message.channel.send('No roles exist with role-modify permission in the bot!');
                 }else{ // If there is stuff in modrole, say the roles
                     let rmmessage = [];
