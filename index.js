@@ -21,6 +21,7 @@ global.useallcmds = [];
 global.logChannel = '';
 global.usedcmd = new Set();
 global.recentlvl = new Set();
+global.mqcl = { ids: [], voice: [] }
 
 // Levelup
 global.lvlnext = [];
@@ -60,17 +61,27 @@ for (const file of commandFiles) {
   	// set a new item in the Collection
   	// with the key as the command name and the value as the exported module
   	for (const n of commande.config.command) {
-    	bot.commands.set(n, commande);
+		bot.commands.set(n, commande);
   	}
 	let names = commande.config.command
+  	// let string = `"${names.join('", "')}"`
   	let string = `${names.join(', ')}`
   	global.commandList.push(string)
 }
 console.log(`Loaded ${commandFiles.length} commands and ${bot.commands.array().length} aliases!`)
 
+// console.log(commandList.join(', '))
+
 // Error message
 global.errormsg = bot.commands.get(`errormessage-dontuse`)
 
+// Reset the music queue
+let fmusicqueue = db.get(`musicqueue`)
+for(i=0; i < fmusicqueue.length; i++){
+	fmusicqueue[i].data.skippers = []
+	fmusicqueue[i].data.queue = []
+}
+db.set(`musicqueue`, fmusicqueue)
 
 // Whenever the bot is added to a server
 bot.on('guildCreate', async guild => {
@@ -217,6 +228,10 @@ bot.on('message', async message => {
 	if(!recentlvl.has(message.author.id)) {
 		let lvlenabledfetch = await db.get(`lvlon_${message.guild.id}`)
 		let lvlon = (lvlenabledfetch == true) ? true : false
+
+		let glvlingfetch = await db.get(`glvling_${message.guild.id}`)
+		let globallevelling = (glvlingfetch == true) ? true : false
+
 		let minlvl = await db.get(`lvlm_${message.guild.id}`)
 		if(minlvl == null) minlvl = 1
 
@@ -242,7 +257,7 @@ bot.on('message', async message => {
 		
 		if(lvltotal.includes(lvlscore)){
 			let newlvl = lvltotal.indexOf(lvlscore) + 1
-			if(newlvl < minlvl) return;
+			if(newlvl < minlvl || globallevelling == false) return;
 			if(lvlon == true) message.channel.send(`Congratulations <@${message.author.id}>, you just globally levelled up to level ${newlvl}!\nYou need ${lvlnext[newlvl]} more messages to level up to level ${newlvl+1}!`)
 		}
 
@@ -353,7 +368,16 @@ bot.on('message', async message => {
 
 bot.login(token);
 
-
+/*
+1. Reaction Roles
+	A user can click on a reaction on a message and get a role.
+2. Timed warns, polls, mutes
+	Add in timed warns and polls that automatically remove or stop themselves after a set period of time.
+	Add in the ability to turn on and off mutes. A moderator can then mute that user
+3. Misc
+	Editable embeds. Levelroles. Custom kick and ban DM messages.
+	Custom level up messages. You can force the bot to leave the server, as well as provide a reason why.
+*/
 
 
 //   MISC
@@ -378,10 +402,9 @@ bot.login(token);
 // -=embed edit (...)
 
 //   ALL
-// -=br (Contents) - Reports a bug in the bot.
 // -=poll (hours)
+// -=poll end (pollID)
 
 
 // Plans for the distant future
 // - Sharding
-// - Music features?

@@ -5,7 +5,7 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.config = {
-    command: ["ping", "p"],
+    command: ["ping"],
     permlvl: "All",
     help: ["Bot", "Get the latency and ping of the bot.",
             "All", "", `But what if you tried using ${prefix}pong`]

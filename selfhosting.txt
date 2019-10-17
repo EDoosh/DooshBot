@@ -6,15 +6,28 @@ Secondly, these things below are what you need to install
 REQUIRED PACKAGES:
 Note: Some of these may require you to install other packages. I have not listed these other packages here, they *should* come with them.
       I also may not have listed everything. If I haven't, tell me and I'll update this.
-- node.js    (https://nodejs.org/en/)
-- discord.js (https://discord.js.org/#/)                [npm install --save discord.js]
-- quick.db   (https://www.npmjs.com/package/quick.db)   [npm install --save quick.db]
-- fs         (Comes with node.js)
-- nodefetch  (https://www.npmjs.com/package/node-fetch) [npm install --save node-fetch]
-- snekfetch  (https://www.npmjs.com/package/snekfetch)  [npm install --save snekfetch]   - At some point might switch everything from snekfetch to nodefetch, idk
-- newsapi    (https://www.npmjs.com/package/newsapi)    [npm install --save newsapi]     - Only for -=news
+- node.js         (https://nodejs.org/en/)
+- discord.js      (https://discord.js.org/#/)                         [npm i discord.js]
+- quick.db        (https://www.npmjs.com/package/quick.db)            [npm i quick.db]
+- fs              (Comes with node.js)
+- nodefetch       (https://www.npmjs.com/package/node-fetch)          [npm i node-fetch]
+- snekfetch       (https://www.npmjs.com/package/snekfetch)           [npm i snekfetch]                - At some point might switch everything from snekfetch to nodefetch, idk
+- newsapi         (https://www.npmjs.com/package/newsapi)             [npm i newsapi]                  - Only for -=news
+
+
+MUSIC REQUIRED PACKAGES
+- ffmpeg          (https://chocolatey.org/packages/ffmpeg)                                             - Only for -=music. Windows' method only, use brew for Mac, or apt on Ubuntu. Also requires you have choco installed. Just click on the Install Now button in the top right corner.
+- simpleytapi     (https://www.npmjs.com/package/simple-youtube-api)  [npm i simple-youtube-api]       - Only for -=music
+- ytdl-core       (https://www.npmjs.com/package/ytdl-core)           [npm i ytdl-core]                - Only for -=music
+- ffmpeg-binaries (https://www.npmjs.com/package/ffmpeg-binaries)     [npm i ffmpeg-binaries]          - Only for -=music. Warning - This can be a complicated install
+- node-opus
+- node-gyp
+- buffer-util
+- lzma-native
+I have no idea if *all* of these are required, this is just the combination I found to work after throwing packages at it for 5 hours.
 
 REQUIRED TOKENS
 - token.txt          The token you get for your discord bot
 - bibletoken.txt     The token to use -=bible, get it from https://developers.youversion.com/
 - tokennewsapi.txt   The token to use -=news, get it from https://newsapi.org/
+- googleapi.txt      The token to use -=music, search it up pls its a bit complicated.

@@ -33,20 +33,10 @@ module.exports.run = async (bot, message, args) => {
                     `\n**${prefix}prefix [new-prefix]** - *I'd recommend only doing this if you need to set a new prefix due to clashing with other bots.*` +
                     `\n**${prefix}m rm [role-name]** - *Adds roles to the role-modify permission for the bot. Role Modify is a feature which allows members to create and edit their own roles with the bot.*` +
                     `\n**${prefix}plvl sl true** - *Enables server levelling. If you don't want to be constantly spammed by level up messages, you can use the following.*` +
-                    `\n**${prefix}plvl lm (min lvl)** - *This makes it so that level messages aren't sent unless the minimum level is met.*`
-                    `\n**${prefix}m lr [level] [role-name]** - *This allows for roles to be added to a user if they reach that level on your server.*`
+                    `\n**${prefix}plvl lm (min lvl)** - *This makes it so that level messages aren't sent unless the minimum level is met.*` +
+                    `\n**${prefix}plvl gm [true | false]** - *This will enable or disable messages that announce a user has globally levelled up.*` +
+                    `\n**${prefix}m lr [level] [role-name]** - *This allows for roles to be added to a user if they reach that level on your server.*` +
                     `\n\`If you have any more questions, or just know how to phrase what I say better, DM EDoosh#9599, or join the invite link with ${prefix}info\``)
-
-                //    ESSENTIAL
-                // Admin
-                // Mod
-                //    OPTIONAL BUT RECOMMENDED
-                // Log-channel & update channel
-                // PLvls
-                //    OPTIONAL
-                // quotechannel
-                // prefix
-                // role-modify
 
     } else if(category.includes(args[a])) {  // BY CATEGORY
         let specpos = category.indexOf(args[a])
@@ -75,11 +65,11 @@ module.exports.run = async (bot, message, args) => {
 
         let hcmdembed = new Discord.RichEmbed()
         hcmdembed.setAuthor(`${category[pos]}   |   ${prefix}${helpcmd.config.command[0]}`, `http://singlecolorimage.com/get/${catcolour[pos]}/128x128`)
-        hcmdembed.setDescription(`Description: ${hcmd[1]}\nAliases: ${helpcmd.config.command.join(', ')}\n\u2800`)
+        hcmdembed.setDescription(`Description: ${hcmd[1]}\n\nAliases: ${helpcmd.config.command.join(', ')}\n\u2800`)
         hcmdembed.setColor(`0x${catcolour[pos]}`)
         hcmdembed.setFooter(footer)
         for(i=2; i < helpcmd.config.help.length; i+=3) { // For the length of the commands help, run this
-            hcmdembed.addField(`${hcmd[i]}  |  ${prefix}${helpcmd.config.command[0]} ${hcmd[i+1]}`, `${hcmd[i+2]}`)
+            hcmdembed.addField(`${hcmd[i]}  |  ${prefix}${(helpcmd.config.command[0] == 'music') ? `(${helpcmd.config.command[0]} )` : `${helpcmd.config.command[0]} `}${hcmd[i+1]}`, `${hcmd[i+2]}`)
         }
         dmto.send(hcmdembed).catch(() => { // If sending the message wasnt successful, announce.
             errormsg.run(bot, message, args, " ", `Failed while sending the message. Maybe DMs are disabled?\`\nTry \`${prefix}${this.config.command[0]} ${this.config.help[5*3]}\``)

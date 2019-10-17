@@ -3,8 +3,10 @@ token.txt
 commands/n.js
 tokennewsapi.txt
 json.sqlite
-json.sqlite
 node_modules/
 bibletoken.txt
 commands/gdupdatenicks.js
-*.sqlite
+ffmpeg/
+testing.js
+googleapi.txt
+engmix.txt

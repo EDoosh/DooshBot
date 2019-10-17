@@ -27,7 +27,7 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.config = {
-    command: ["playing", "pl", "play"],
+    command: ["setplaying", "spl", "splay"],
     permlvl: "Trusted",
     help: ["Trusted", "Set the playing status of the bot.",
             "Trusted", "[playing | watching | listening] [status]", "Set the status of the bot."]

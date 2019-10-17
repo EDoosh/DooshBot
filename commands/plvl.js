@@ -24,6 +24,12 @@ module.exports.run = async (bot, message, args) => {
                 let slon = (serverlevelson) ? serverlevelson : false
                 message.channel.send(`Server levelling and level messages are set to \`${slon}\``)
                 break;
+            case 'globalmessages':
+                case 'gm':
+                    let gmonf = await db.get(`glvling_${message.guild.id}`)
+                    let gmon = (gmonf) ? gmonf : false
+                    message.channel.send(`Server levelling and level messages are set to \`${gmon}\``)
+                    break;
             case 'levelmessages':
             case 'lm':
                 let minlvlf = await db.get(`lvlm_${message.guild.id}`)
@@ -55,6 +61,13 @@ module.exports.run = async (bot, message, args) => {
                 message.channel.send(`Server levelling and level messages are now set to \`${tf}\`.`);
                 break;
 
+            case 'globalmessages':
+            case 'gm':
+                let tfgm = (args[2] == 't' || args[2] == 'true') ? true : false
+                db.set(`glvling_${message.guild.id}`, tfgm);
+                message.channel.send(`Global level up messages are now set to \`${tfgm}\`.`);
+                break;
+
             case 'levelmessages':
             case 'lm':
                 db.set(`lvlm_${message.guild.id}`, args[2])
@@ -72,5 +85,6 @@ module.exports.config = {
             "Admin", "[kick | ban | notify] [warn-count]", "Set the amount of warns required to kick/ban the user, or notify in the logchannel.",
             "Admin", "[kick | ban | notify] 0", "Disable the amount of warns required to kick/ban the user, or notify in the logchannel.",
             "Admin", "serverlevels [true | false]", "Enable server levels, level up messages, and level roles.",
-            "Admin", "levelmessages [min-levels]", "Sets the minimum required levels for level messages to start sending."]
+            "Admin", "levelmessages [min-levels]", "Sets the minimum required levels for level messages to start sending.",
+            "Admin", "globalmessages [true | false]", "Enable/disable global level up messages. Will not send if serverlevels or levelmessages aren't met."]
 }

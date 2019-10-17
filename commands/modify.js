@@ -193,7 +193,89 @@ module.exports.run = async (bot, message, args) => {
                     message.channel.send('The role `' + rmcol.name + '` now has Role Modify permission for this bot!'); // Say its been added
                 }
             }
-            break;  
+            break;
+
+        case 'mb':
+        case 'musicban': // Same structure as ModRole
+            let fmbrole = await db.get(`mbanrole_${message.guild.id}`)
+            let mbrole = fmbrole ? fmbrole : []
+            combineArgs(2); // Combine everything after argument 2
+            if(!args[2]) { // If there isn't an argument 2
+                if(mbrole.length === 0) { // If there isn't anything in modrole, say so
+                    message.channel.send('No roles exist with Music Ban in the bot!');
+                }else{ // If there is stuff in modrole, say the roles
+                    let mbanmessage = [];
+                    for(i=0; i < mbrole.length; i++){
+                        let mbcol = message.guild.roles.find(x => x.id == mbrole[i])
+                        if(!mbcol) {mbanmessage.push(`**DELETED ROLE** (${mbrole[i]})`); continue; }
+                        mbanmessage.push(`${mbcol.name} (${mbrole[i]})`)
+                    }
+                    message.channel.send('Current roles with musicban: ' + mbanmessage.join(', '));
+                }
+            }else if(mbrole.includes(args[2])){ // If there is already that id in the modrole...
+                mbrole.splice(mbrole.indexOf(args[2]), 1); // Remove it from modrole
+                db.set(`mbanrole_${message.guild.id}`, mbrole); // Set the new modrole into the database
+                message.channel.send('The role `' + args[2] + '` has been removed from Music Ban for this bot!'); // Say its been removed
+            }else{
+                // Create collection of the role
+                let mbcol;
+                if(message.guild.roles.find(x => x.id == args[2])) mbcol = message.guild.roles.find(x => x.id == args[2])
+                else if(message.guild.roles.find(x => x.name == args[2])) mbcol = message.guild.roles.find(x => x.name == args[2])
+                // Check if there is a role. If not, throw error.
+                if(!mbcol) return message.channel.send('The role `' + args[2] + '` does not exist!');
+                // Remove by name
+                if(mbrole.includes(mbcol.id)) {
+                    mbrole.splice(mbrole.indexOf(mbcol.id), 1); // Remove it from modrole
+                    db.set(`mbanrole_${message.guild.id}`, mbrole); // Set the new modrole into the database
+                    message.channel.send('The role `' + mbcol.name + '` has been removed from Music Ban for this bot!'); // Say its been removed
+                } else {
+                    mbrole.push(mbcol.id); // Add it in to modrole
+                    db.set(`mbanrole_${message.guild.id}`, mbrole); // Set the new modrole into the database
+                    message.channel.send('The role `' + mbcol.name + '` now has Music Ban for this bot!'); // Say its been added
+                }
+            }
+            break;
+
+        case 'dj':
+        case 'dj-role': // Same structure as ModRole
+            let fdjrole = await db.get(`djrole_${message.guild.id}`)
+            let djrole = fdjrole ? fdjrole : []
+            combineArgs(2); // Combine everything after argument 2
+            if(!args[2]) { // If there isn't an argument 2
+                if(djrole.length === 0) { // If there isn't anything in modrole, say so
+                    message.channel.send('No roles exist with DJ permissions in the bot!');
+                }else{ // If there is stuff in modrole, say the roles
+                    let djmessage = [];
+                    for(i=0; i < djrole.length; i++){
+                        let djcol = message.guild.roles.find(x => x.id == djrole[i])
+                        if(!djcol) {djmessage.push(`**DELETED ROLE** (${djrole[i]})`); continue; }
+                        djmessage.push(`${djcol.name} (${djrole[i]})`)
+                    }
+                    message.channel.send('Current roles with DJ: ' + djmessage.join(', '));
+                }
+            }else if(djrole.includes(args[2])){ // If there is already that id in the modrole...
+                djrole.splice(djrole.indexOf(args[2]), 1); // Remove it from modrole
+                db.set(`djrole_${message.guild.id}`, djrole); // Set the new modrole into the database
+                message.channel.send('The role `' + args[2] + '` has been removed from DJ permissions for this bot!'); // Say its been removed
+            }else{
+                // Create collection of the role
+                let djcol;
+                if(message.guild.roles.find(x => x.id == args[2])) djcol = message.guild.roles.find(x => x.id == args[2])
+                else if(message.guild.roles.find(x => x.name == args[2])) djcol = message.guild.roles.find(x => x.name == args[2])
+                // Check if there is a role. If not, throw error.
+                if(!djcol) return message.channel.send('The role `' + args[2] + '` does not exist!');
+                // Remove by name
+                if(djrole.includes(djcol.id)) {
+                    djrole.splice(djrole.indexOf(djcol.id), 1); // Remove it from modrole
+                    db.set(`djrole_${message.guild.id}`, djrole); // Set the new modrole into the database
+                    message.channel.send('The role `' + djcol.name + '` has been removed from DJ permissions for this bot!'); // Say its been removed
+                } else {
+                    djrole.push(djcol.id); // Add it in to modrole
+                    db.set(`djrole_${message.guild.id}`, djrole); // Set the new modrole into the database
+                    message.channel.send('The role `' + djcol.name + '` now has DJ permissions for this bot!'); // Say its been added
+                }
+            }
+            break;
 
         case 'lc':
         case 'log-channel': // If the user wants to edit the logchannel

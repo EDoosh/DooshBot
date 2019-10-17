@@ -10,16 +10,25 @@
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^5.4.3",
+    "bufferutil": "^4.0.1",
     "discord.js": "^11.5.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^2.7.0",
     "is-image-url": "^1.1.8",
     "libsodium-wrappers": "^0.7.5",
+    "lzma-native": "^4.0.5",
     "newsapi": "^2.4.0",
     "node-fetch": "^2.6.0",
-    "node-opus": "^0.3.2",
+    "node-gyp": "^6.0.0",
+    "node-opus": "^0.3.3",
     "opusscript": "0.0.7",
     "quick.db": "^7.0.0-b22",
     "quick.hook": "^1.5.1",
     "request": "^2.88.0",
-    "snekfetch": "^4.0.4"
+    "simple-youtube-api": "^5.2.1",
+    "snekfetch": "^4.0.4",
+    "ytdl-core": "^1.0.0",
+    "zlib-sync": "^0.1.5",
+    "zucc": "^0.1.2"
   }
 }
