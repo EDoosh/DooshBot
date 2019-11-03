@@ -214,6 +214,7 @@ bot.on('raw', async event => {
 	const { d: data } = event;
 	// Get the info from the DB and loop through to find the ID of the reacted message
 	const rrguild = await db.get(`rr_${data.guild_id}`);
+	if(!rrguild) return;
 	for(i=0; i < rrguild.length; i++) {
 		if(rrguild[i].messageID == data.message_id) {
 			var rrid = i;
