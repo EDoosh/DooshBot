@@ -8,5 +8,5 @@ module.exports.config = {
     command: ["ping"],
     permlvl: "All",
     help: ["Bot", "Get the latency and ping of the bot.",
-            "All", "", `But what if you tried using ${prefix}pong`]
+            "All", "", `But what if you tried using -=pong?`]
 }

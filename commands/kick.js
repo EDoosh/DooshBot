@@ -55,6 +55,6 @@ module.exports.config = {
     command: ["kick", "k"],
     permlvl: "Mod",
     help: ["Mod", "Kick a user for a specified reason.",
-            "Mod", "[mention | userID | username] (reason)", "Kick a user and tell them. If a reason is specified, the user is told and that reason is used in the logchannel.",
-            "Mod", "[mention | userID | username] s (reason)", "Softkicks a user. Same as above but they aren't notified."]
+            "Mod", "[userRepresentable] (reason)", "Kick a user and DM them the reason if provided. Reason is also used in Log Channel.",
+            "Mod", "[userRepresentable] s (reason)", "Soft-Kick a user and uses the reason provided in Log Channel."]
 }

@@ -29,5 +29,5 @@ module.exports.config = {
     command: ["poll"],
     permlvl: "All",
     help: ["Fun", "Create a poll.",
-            "All", "|[Poll Title] |[Option 1] |[Option 2]...", "Create a poll with up to 10 options."]
+            "All", "|[Poll Title] |[Option 1] |[Option 2]...", "Creates a poll with up to 10 options, seperated by a vertical bar (|)"]
 }

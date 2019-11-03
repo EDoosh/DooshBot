@@ -55,7 +55,7 @@ module.exports.config = {
     command: ["memberinfo", "mi"],
     permlvl: "All",
     help: ["Other", "Get information about yourself or another user.",
-            "All", "(mention | userID | username)", "Get information about yourself or another user."],
+            "All", "[userRepresentable]", "Get information about yourself or a specified user."],
     helpg: ""
 }
 

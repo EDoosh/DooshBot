@@ -125,5 +125,6 @@ module.exports.config = {
     command: ["warn", "w"],
     permlvl: "Mod",
     help: ["Mod", "Warn a user for a specified reason.",
-            "Mod", "[mention | userID | username] (warn-count) (reason)", "Warn a user.\nIf a warn-count is entered, they are warned that many times.\nIf a reason is specified, that is used in logchannel.\nIf they reach a level set in plvl, they are kicked/banned/notified."]
+            "Mod", "[userRepresentable] (reason)", "Warn a user once. If a reason is specified, that is used in Log Channel.",
+            "Mod", "[userRepresentable] [2-20] (reason)", "Warn a user for the number of times provided. If a reason is specified, that is used in Log Channel."]
 }

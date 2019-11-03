@@ -17,6 +17,7 @@
     "is-image-url": "^1.1.8",
     "libsodium-wrappers": "^0.7.5",
     "lzma-native": "^4.0.5",
+    "music-metadata": "^4.8.2",
     "newsapi": "^2.4.0",
     "node-fetch": "^2.6.0",
     "node-gyp": "^6.0.0",

@@ -32,7 +32,7 @@ module.exports.run = async (bot, message, args) => {
                     'remove', 'r',
                     'volume', 'vol', 'v',
                     'skip', 's', 'next', 'n',
-                    'list', 'l', 'queue', 'q',
+                    'list', 'l', 'queue',
                     'votemin', 'vm']
 
     let a = (commands.includes(args[0])) ? 0 : 1
@@ -75,7 +75,7 @@ module.exports.run = async (bot, message, args) => {
             text : '622931400039071754',
             queue : [
                 [
-                    url : 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                    url : 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'    // Stop don't click that link oh shit he has airpods in he cant hear us
                     reqr : '267723762563022849'
                     title : 'Epic Minecraft Let's Play 27: BOOM...'
                     artist : 'XerCend'
@@ -118,7 +118,7 @@ module.exports.run = async (bot, message, args) => {
                     args[a+1+b] += ' ' + args[i];
                 }
                 try {
-                    let listofvids = await youtube.searchVideos(args[a+1+b], 10);
+                    let listofvids = await youtube.searchVideos(args[a+1+b], 5);
                     let sindex = 0
                     reqmsgtosend = [`__**Song search**__\n`]
                     for(const lov of listofvids){
@@ -128,17 +128,22 @@ module.exports.run = async (bot, message, args) => {
                         }
                         reqmsgtosend.push(`**${++sindex}  -**  \`${lov.title.replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&#39;/g,'\'')}\`\n               ${(b == 0) ? `\`${lovlength}\` ⬥ ` : ''}\`${lov.channel.title}\``)
                     }
-                    reqmsgtosend.push(`\nEnter the ID of the song you wish to play.`)
-                    message.channel.send(reqmsgtosend.join(`\n`))
+                    reqmsgtosend.push(`\nEnter the ID of the song you wish to play, or 'Cancel' to quit the selection.`)
+                    var listofsongsmsg = await message.channel.send(reqmsgtosend.join(`\n`))
                     try{
-                        var response = await message.channel.awaitMessages(pmsg => pmsg.content > 0 && pmsg.content < 11, {
+                        var response = await message.channel.awaitMessages(pmsg => ((pmsg.content > 0 && pmsg.content < 6) || pmsg.content.toLowerCase() == 'cancel'), {
                             maxMatches:1,
                             time: 20000,
                             errors: ['time']
                         })
                     } catch (err) {
                         console.error(err)
+                        listofsongsmsg.delete();
                         return message.channel.send(`Invalid ID entered, cancelling selection.`)
+                    }
+                    if(response.first().content.toLowerCase() == 'cancel') {
+                        listofsongsmsg.delete();
+                        return message.channel.send(`Cancelled the selection.`)
                     }
                     var video = await youtube.getVideoByID(listofvids[parseInt(response.first().content) - 1].id)
                 } catch (err) {
@@ -148,8 +153,9 @@ module.exports.run = async (bot, message, args) => {
             }
 
             let channelInfo = await youtube.getChannelByID(video.raw.snippet.channelId)
+            listofsongsmsg.delete();
 
-            if(video.id == 'dQw4w9WgXcQ') return message.channel.send(`Hey everyone, look at this funny guy who just tried to Rickroll everyone. Hahaha, I'm laughing so hard right now.`)
+            if(video.id == 'dQw4w9WgXcQ') return message.channel.send(`Hey everyone, look at this funny guy who just tried to Rickroll everyone. Hahaha, I'm laughing so hard right now xddddddddd.`)
 
             let sinfo = {
                 url : video.shortURL,
@@ -208,16 +214,18 @@ module.exports.run = async (bot, message, args) => {
             // Get the length, requester, and votes required to skip of current song
             let votes = votesCal(music.data.skippers.length);
             let length = lengthOfSong(music.data.queue[0].length)
+            // let lengthr = lengthOfSong(mqc.dispatcher.time / 1000)
+            // console.log(mqc.dispatcher)
             let requester = message.guild.members.find(member => member.id == music.data.queue[0].reqr)
             // Add the currently playing song to the queue message
             let npembed = new Discord.RichEmbed()
                 .setAuthor(music.data.queue[0].artist, music.data.queue[0].artisticon)
                 .setThumbnail(music.data.queue[0].vidicon)
                 .setTitle(`Currently Playing\n**${music.data.queue[0].title}**`)
-                .addField(`Length`, length, true)
+                .addField(`Length`, `\`${length}\``, true)
                 .addField(`Requester`, requester.displayName, true)
                 .addField(`URL`, music.data.queue[0].url, true)
-                .addField(`Skips`, `${music.data.skippers.length} of required ${votes}`, true)
+                .addField(`Skips`, `${music.data.skippers.length} of required ${votes == 0 ? '1' : votes}`, true)
                 .addField(`Current Channel`, `:loud_sound: ${mqc.channel.name}`,true)
                 .addField(`Current Volume`, music.data.volume,true)
                 .setColor(0x31aaf5)
@@ -229,10 +237,13 @@ module.exports.run = async (bot, message, args) => {
         case 'resume':
             if(!vc) return message.channel.send(`You aren't in a voice channel!`);
             if(!message.member.roles.find(role => dj.includes(role.id)) && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send(`You don't have the DJ role! This command is only accessible to members with roles of that permission.`);
+            let lengthprr = lengthOfSong(dispatcher.streamTime / 1000)
+            let lengthpr = lengthOfSong(music.data.queue[0].length)
             if(!mqc.dispatcher.paused){
                 mqc.dispatcher.pause();
                 let pausembed = new Discord.RichEmbed()
                     .setTitle('The music has been paused.')
+                    .setDescription(`\`${lengthprr} / ${lengthpr}\``)
                     .setColor(0xf53131)
                     .setFooter(rndPauseFooter[Math.floor(Math.random() * rndPauseFooter.length)])
                 message.channel.send(pausembed)
@@ -240,6 +251,7 @@ module.exports.run = async (bot, message, args) => {
                 mqc.dispatcher.resume();
                 let playmbed = new Discord.RichEmbed()
                     .setTitle('The music has been resumed!')
+                    .setDescription(`\`${lengthprr} / ${lengthpr}\``)
                     .setColor(0x31f579)
                     .setFooter(rndPlayFooter[Math.floor(Math.random() * rndPlayFooter.length)])
                 message.channel.send(playmbed)
@@ -279,9 +291,9 @@ module.exports.run = async (bot, message, args) => {
         case 'vol':
         case 'v':
             if(!vc) return message.channel.send(`You aren't in a voice channel!`)
-            if(!message.member.roles.find(role => dj.includes(role.id)) && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send(`You don't have the DJ role! This command is only accessible to members with roles of that permission.`);
             if(!music.data.queue[0]) return message.channel.send(`There are currently no songs playing or in the queue.`);
             if(!args[a+1]) return message.channel.send(`The current volume is \`${music.data.volume}\``);
+            if(!message.member.roles.find(role => dj.includes(role.id)) && !hasAdmin && !useallcmds.includes(msgUserID)) return message.channel.send(`You don't have the DJ role! This command is only accessible to members with roles of that permission.`);            
             music.data.volume = parseInt(args[a+1]);
             mqc.dispatcher.setVolumeLogarithmic(parseInt(args[a+1])/100);
             message.channel.send(`Volume set to \`${args[a+1]}\``);
@@ -292,8 +304,8 @@ module.exports.run = async (bot, message, args) => {
         case 'votemin':
         case 'vm':
             if(!vc) return message.channel.send(`You aren't in a voice channel!`)
-            if(!hasAdmin && !useallcmds.includes(message.author.id)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
             if(!args[a+1]) return message.channel.send(`The current vote skip minimum is \`${music.data.voteMin * 100}%\``);
+            if(!hasAdmin && !useallcmds.includes(message.author.id)) return message.channel.send('`Error - Requires Admin permission!`\nIf you think this is an issue, please contact the owner of your server.\nTell them to run `' + prefix + 'modify admin-role [role name]`');
             music.data.voteMin = parseInt(args[a+1]/100);
             message.channel.send(`Vote skip minimum set to \`${music.data.voteMin * 100}%\``);
             fmusicqueue.splice(index, 1, music)
@@ -319,14 +331,13 @@ module.exports.run = async (bot, message, args) => {
                 skipSong('skip', 0)
             } else {
                 let votes = votesCal(music.data.skippers.length);
-                message.channel.send(`${message.member.displayName} has voted to skip the song. ${votes} more votes are needed.`);
+                message.channel.send(`${message.member.displayName} has voted to skip the song. ${votes < 0 ? '0' : votes} more votes are needed.`);
             }
             break;
 
         case 'list':
         case 'l':
         case 'queue':
-        case 'q':
             if(!music.data.queue[0]) return message.channel.send(`There are currently no songs playing or in the queue.`);
             // Get the page number to get results from
             let pageno = (args[a+1] && args[a+1] > 0 && args[a+1] < Math.ceil(music.data.queue.length/10)) ? args[a+1] : 1;
@@ -336,9 +347,10 @@ module.exports.run = async (bot, message, args) => {
             // Get the length, requester, and votes required to skip of current song
             let votesq = votesCal(music.data.skippers.length);
             let lengthq = lengthOfSong(music.data.queue[0].length)
+            // let lengthqr = lengthOfSong(dispatcher.streamTime / 1000)
             let requesterq = message.guild.members.find(member => member.id == music.data.queue[0].reqr)
             // Add the currently playing song to the queue message
-            queuemessage += `\n\`${music.data.queue[0].title}\` ⬥ \`${music.data.queue[0].artist}\`\n               Requested by \`${requesterq.displayName}\` ⬥ Length: \`${lengthq}\` ⬥ URL: \`${music.data.queue[0].url}\`\n               Current skips: ${music.data.skippers.length} of needed ${votesq} ⬥ Current volume: ${music.data.volume}\n`
+            queuemessage += `\n\`${music.data.queue[0].title}\` ⬥ \`${music.data.queue[0].artist}\`\n               Requested by \`${requesterq.displayName}\` ⬥ Length: ${lengthq}\` ⬥ URL: \`${music.data.queue[0].url}\`\n               Current skips: ${music.data.skippers.length} of needed ${votes == 0 ? '1' : votesq} ⬥ Current volume: ${music.data.volume}\n`
             
             for(i=pageno*10-9; i <= pageno*10 && i < music.data.queue.length; i++){
                 let lengthl = lengthOfSong(music.data.queue[i].length)
@@ -418,7 +430,7 @@ module.exports.run = async (bot, message, args) => {
             return;
         }
 
-        const dispatcher = mqc.playStream(ytdl(song.url))
+        const dispatcher = mqc.playStream(ytdl(song.url, { format: 'audioonly' }))
             .on('end', reason => {
                 if (reason !== 'Stream is not generating quickly enough.' && reason !== 'Stop command has been used!' && reason !== 'Next command has been used!') {
                     console.log(reason);
@@ -433,9 +445,10 @@ module.exports.run = async (bot, message, args) => {
                     db.set(`musicqueue`, fmusicqueue)
                 }
                 nextVideo();
-            })
-            .on('error', error => { console.error(error); console.log('An error occured. See above for more details.'); });
+            });
         dispatcher.setVolumeLogarithmic(music.data.volume / 100);
+
+        dispatcher.on('error', error => { console.log(error) });
 
         let length = lengthOfSong(song.length)
         let reqr = bot.guilds.find(guild => guild.id == music.guildID).members.find(member => member.id == song.reqr)
@@ -459,7 +472,7 @@ module.exports.config = {
                 'remove', 'r',
                 'volume', 'vol', 'v',
                 'skip', 's', 'next',
-                'list', 'l', 'queue', 'q',
+                'list', 'l', 'queue',
                 'votemin', 'vm'
             ],
     permlvl: "All",

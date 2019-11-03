@@ -59,13 +59,13 @@ for (const file of commandFiles) {
 	console.log(`Command ${file} loading...`);
   	const commande = require(`./commands/${file}`);
   	// set a new item in the Collection
-  	// with the key as the command name and the value as the exported module
+	// with the key as the command name and the value as the exported module
   	for (const n of commande.config.command) {
 		bot.commands.set(n, commande);
   	}
 	let names = commande.config.command
   	// let string = `"${names.join('", "')}"`
-  	let string = `${names.join(', ')}`
+  	let string = names.join(', ')
   	global.commandList.push(string)
 }
 console.log(`Loaded ${commandFiles.length} commands and ${bot.commands.array().length} aliases!`)
@@ -200,6 +200,70 @@ bot.on('guildMemberRemove', async member => {
 })
 
 
+// Reaction Roles is mostly credit to https://github.com/Sam-DevZ/Discord-RoleReact/blob/master/role.js
+const events = {
+	MESSAGE_REACTION_ADD: 'messageReactionAdd',
+	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+};
+// This event handles adding/removing users from the role(s) they chose based on message reactions
+// We can't use bot.on('messageReactionAdd') as that only uses cached messages
+bot.on('raw', async event => {
+	// Make sure it's either MESSAGE_REACTION_ADD or MESSAGE_REACTION_REMOVE
+	if (!events.hasOwnProperty(event.t)) return;
+	// Set data to the reaction data
+	const { d: data } = event;
+	// Get the info from the DB and loop through to find the ID of the reacted message
+	const rrguild = await db.get(`rr_${data.guild_id}`);
+	for(i=0; i < rrguild.length; i++) {
+		if(rrguild[i].messageID == data.message_id) {
+			var rrid = i;
+			break;
+		};
+	};
+	// If there are no matches, quit the function.
+	if(rrid === null) return;
+	// Create a list of all the emojis on that message
+	let listOfEmojis = [];
+	for(i=0; i < rrguild[rrid].reactions.length; i++) {
+		listOfEmojis.push(rrguild[rrid].reactions[i].emoji);
+	}
+	// Make sure it is a real reaction role
+	if(!listOfEmojis.includes(data.emoji.id) && !listOfEmojis.includes(data.emoji.name)) return;
+	// Get the user, member, channel, and message.
+    const user = bot.users.get(data.user_id);
+    const channel = bot.channels.get(data.channel_id);
+	const message = await channel.fetchMessage(data.message_id);
+	const member = message.guild.members.get(user.id);
+	// Make sure they are not a bot
+	if(user.bot) return;
+	// Create emoji data
+	const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+    let reaction = message.reactions.get(emojiKey);
+    if (!reaction) {
+        // Create an object that can be passed through the event like normal
+        const emoji = new Emoji(bot.guilds.get(data.guild_id), data.emoji);
+        reaction = new MessageReaction(message, emoji, 1, data.user_id === bot.user.id);
+	}
+	// Initialise loop through of every role
+	var listOfRR = [];
+	for(i=0; i < rrguild[rrid].reactions.length; i++) {
+		if(listOfEmojis[i] === (data.emoji.id ? data.emoji.id : data.emoji.name)) {
+			listOfRR.push(i)
+		}
+	}
+	// Loop through for every role it has to do.
+	for(i=0; i < listOfRR.length; i++){
+		const guildRole = await message.guild.roles.find(r => r.id === rrguild[rrid].reactions[listOfRR[i]].role);
+		try {
+			if (event.t === "MESSAGE_REACTION_ADD") member.addRole(guildRole.id);
+			else member.removeRole(guildRole.id);
+		} catch {
+			console.log('Someone forgot to give the bot Manage Role perms...')
+		}
+	}
+});
+
+
 // WHEN THE BOT IS ONLINE
 bot.on('ready', () =>{
 	console.log('ONLINE');
@@ -213,7 +277,6 @@ bot.on('ready', () =>{
 
 	console.log(`${botont}   -   Bot has started, with ${bot.users.size} users, in ${bot.channels.size} channels of ${bot.guilds.size} guilds.`);
 });
-
 
 
 // WHEN A MESSAGE IS SENT IN A GUILD
@@ -322,21 +385,16 @@ bot.on('message', async message => {
 	// GET THE SETTINGS FROM THE DATABASE ABOUT THE SERVER
 	//   Adminrole
 	let fadmrole = await db.get(`adminrole_${message.guild.id}`);
-	if (fadmrole != null) adminrole = fadmrole;
-	else adminrole = [];
+	adminrole = (fadmrole === null) ? [] : fadmrole;
 	//   Modrole
 	let fmodrole = await db.get(`modrole_${message.guild.id}`);
-	if (fmodrole != null) modrole = fmodrole;
-	else modrole = [];
-
+	modrole = (fmodrole === null) ? [] : fmodrole;
 	//   RMRole
 	let frmrole = await db.get(`rmrole_${message.guild.id}`);
-	if (frmrole != null) rmrole = frmrole;
-	else rmrole = [];
+	rmrole = (frmrole === null) ? [] : frmrole;
 	//   LogChannel
 	let flc = await db.get(`logChannel_${message.guild.id}`);
-	if (flc != null && flc != 0) logChannel = bot.channels.get(flc);
-	else logChannel = 0;
+	logChannel = (flc === null || flc === 0) ? 0 : bot.channels.get(flc);
 
 	// Set message variables.
 	global.guildmsg = message.guild;
@@ -369,13 +427,11 @@ bot.on('message', async message => {
 bot.login(token);
 
 /*
-1. Reaction Roles
-	A user can click on a reaction on a message and get a role.
-2. Timed warns, polls, mutes
+1. Timed warns, polls, mutes
 	Add in timed warns and polls that automatically remove or stop themselves after a set period of time.
 	Add in the ability to turn on and off mutes. A moderator can then mute that user
-3. Misc
-	Editable embeds. Levelroles. Custom kick and ban DM messages.
+2. Misc
+	Editable embeds, and better system to make them. Levelroles. Custom kick and ban DM messages.
 	Custom level up messages. You can force the bot to leave the server, as well as provide a reason why.
 */
 
@@ -408,3 +464,4 @@ bot.login(token);
 
 // Plans for the distant future
 // - Sharding
+// - Play uploaded music files

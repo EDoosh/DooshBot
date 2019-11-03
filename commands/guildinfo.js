@@ -76,7 +76,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.config = {
     command: ["guildinfo", "gi"],
     permlvl: "All",
-    help: ["Other", "Gets a little bit of information about the guild. To be improved later.",
+    help: ["Other", "Gets a little bit of information about the guild.",
             "All", "", "Gets information about the current guild.",
-            "All", "[guildID]", "Gets information about the guild with that ID, provided the bot is in it."]
+            "All", "[guildID]", "Gets information about the guild with that ID, provided the bot is in there."]
 }

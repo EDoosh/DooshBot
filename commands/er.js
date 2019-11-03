@@ -113,11 +113,11 @@ module.exports.config = {
     command: ["er", "editrole", "e-r", "edit-role"],
     permlvl: "RoleChange",
     help: ["Role Modify", "Create, edit, and delete your own custom role.",
-            "RoleModify", "create [hex-colour] [name]", "Creates a custom role with that colour and name, then gives it to you. Doesn't work if you already have one.",
-            "RoleModify", "[colour|color] [hex-colour]", "Edits your custom role to have that new colour.",
-            "RoleModify", "name [name]", "Edits your custom role to have that new name.",
-            "RoleModify", "toggle", "Toggles between you having your role and not having your role.",
-            "RoleModify", "repos", "Changes the position of your role to right above your highest.",
-            "RoleModify", "delete", "Deletes your custom role."],
+            "RoleModify", "[create | c] [#hex] [name]", "Creates a custom role with that colour and name, then applies it to you.",
+            "RoleModify", "[color | colour | cr | cl] [#hex]", "Changes the colour of your existing custom role.",
+            "RoleModify", "[name | n] [name]", "Changes the name of your existing custom role.",
+            "RoleModify", "[toggle | t]", "Allows you to toggle between having and not having your custom role.",
+            "RoleModify", "[repos | rp | pos]", "Repositions your custom role to just above your highest.",
+            "RoleModify", "[delete | d]", "Deletes your custom role."],
     helpg: "[create | delete | colour | name | toggle | repos]"
 }

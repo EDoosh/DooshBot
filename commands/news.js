@@ -74,5 +74,5 @@ module.exports.config = {
     permlvl: "All",
     help: ["Fun", "Get a news article.",
             "All", "", "Send a random top headline to the channel.",
-            "All", "[search-term]", "Send one of the top 20 articles that match that search term from the past week."]
+            "All", "[search term]", "Send one of the top 20 articles that match that search term from the past week."]
 }

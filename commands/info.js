@@ -18,7 +18,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.config = {
     command: ["info", "i"],
     permlvl: "All",
-    help: ["Bot", "Get information about the discord bot.",
-            "All", "", "Get information about the discord bot DM'd to you.",
-            "All", "c", "Get information about the discord bot sent to the current channel."]
+    help: ["Bot", "List information about the bot.",
+            "All", "", "Send information about the bot into your DMs.",
+            "All", "c", "Send information about the bot into the current channel."]
 }

@@ -53,6 +53,6 @@ module.exports.config = {
     command: ["ban", "b"],
     permlvl: "Admin",
     help: ["Admin", "Ban a user for a specified reason.",
-            "Admin", "[mention | userID | username] (reason)", "Ban a user and tell them. If a reason is specified, the user is told and that reason is used in the logchannel.",
-            "Admin", "[mention | userID | username] s (reason)", "Softbans a user. Same as above but they aren't notified."]
+            "Admin", "[userRepresentable] (reason)", "Ban a user and DM them the reason if specified. Reason is also used in Log Channel.",
+            "Admin", "[userRepresentable] s (reason)", "Soft-Ban a user and don't DM them. Reason is used in Log Channel."]
 }

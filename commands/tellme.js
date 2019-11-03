@@ -45,7 +45,7 @@ module.exports.run = async (bot, message, args) => {
 
         let ftellme = await db.fetch(`tm_${args[1]}_${memberid}`); // Get the number it previously evaluated at from the database
         if (ftellme === null) { // If it wasn't previously evaluated, it returns null
-            tellmenum = parseInt(Math.random() * 10) // Gets a random number between 1 and 10 to be shown to the member later
+            tellmenum = parseInt(Math.random() * 11) // Gets a random number between 1 and 10 to be shown to the member later
             db.set(`tm_${args[1]}_${memberid}`, tellmenum) // Adds to the database so it can be retrieved next time
         } else { // If it was previously evaluated
             tellmenum = ftellme; // Sets the number that will be told to the member to the one gotten from the database
@@ -59,7 +59,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.config = {
     command: ["tellme", "tm"],
     permlvl: "All",
-    help: ["Fun", "Tells you something about someone on a scale of 1-10. Stays permanent across all servers, everywhere.",
-            "All", "[mention | userID | username] [thing]", "Tells you something about that person on a scale of 1-10.",
-            "All", "[thing]", "Tells you something about yourself on a scale of 1-10!"]
+    help: ["Fun", "Tells you something about someone on a scale of 0-10.",
+            "All", "[thing]", "Tells you something about yourself on a scale of 0-10!",
+            "All", "[userRepresentable] [thing]", "Tells you something about another user on a scale of 0-10!"]
 }

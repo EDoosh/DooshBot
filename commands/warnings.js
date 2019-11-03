@@ -112,9 +112,9 @@ module.exports.config = {
     command: ["warnings", "warns", "ws"],
     permlvl: "Mod",
     help: ["Mod", "Clear, Delete, List, and Count the number of warns a user has.",
-            "Mod", "[mention | userID | username] list", "List all the warns a user has.",
-            "Mod", "[mention | userID | username] count", "Display the number of warns a user has.",
-            "Admin", "[mention | userID | username] deleteID [warnID] (reason)", "Delete a warn by its warnID. If reason is specified, use that in logchannel.",
-            "Admin", "[mention | userID | username] clear", "Clear all the warns a user has."],
-    helpg: "[mention | userID | username] [list | count | deleteID | clear]"
+            "Mod", "[userRepresentable] list", "List all the warnings a user has.",
+            "Mod", "[userRepresentable] count", "Display the number of warnings a user has.",
+            "Admin", "[userRepresentable] deleteid [warnID] (reason)", "Delete a warn by its Warn ID. If reason is specified, use that in Log Channel.",
+            "Admin", "[userRepresentable] clear", "Clear all the warns a user has."],
+    helpg: "[userRepresentable] [list | count | deleteID | clear]"
 }

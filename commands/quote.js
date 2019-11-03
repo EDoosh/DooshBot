@@ -175,9 +175,7 @@ module.exports.config = {
     command: ["quote"],
     permlvl: "Mod",
     help: ["Mod", "Create or delete a quote.",
-            "Mod", "add [messageID]", "Create a quote from that message ID.",
-            "Mod", "remove [quoteID]", "Remove a quote by quoteID.",
-            "Trusted", "ga [messageID]", "Create a global quote from that message ID.",
-            "Trusted", "gr [globalQuoteID]", "Remove a global quote by globalQuoteID."],
+            "Mod", "add [messageID]", "Create a quote from a Message ID.",
+            "Mod", "remove [quoteID]", "Remove a quote by Quote ID."],
     helpg: "[add | remove]"
 }

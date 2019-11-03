@@ -34,8 +34,8 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.config = {
-    command: ["clear", "c"],
+    command: ["clear", "clr"],
     permlvl: "Mod",
     help: ["Mod", "Clear a certain number of messages.",
-            "Mod", "[1-99] (reason)", "Deletes that amount of messages. If a reason is specified, that reason is used in the logchannel."]
+            "Mod", "[1-99] (reason)", "Clear that number of messages and, if specified, provides a reason for Log Channel."]
 }

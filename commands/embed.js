@@ -120,6 +120,6 @@ module.exports.config = {
     command: ["embed", "emb"],
     permlvl: "Mod",
     help: ["Mod", "Creates an embed.",
-            "Mod", "help", "Shows the flags you can use to create an embed.",
+            "Mod", "help", "Displays a list of all the flags you can use to create an embed.",
             "Mod", "[flags]", "Creates an embed with those flags and values."]
 }

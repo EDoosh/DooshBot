@@ -42,7 +42,7 @@ module.exports.config = {
     command: ["bible"],
     permlvl: "All",
     help: ["Fun", "Gets a bible quote image.",
-            "All", "", "Get the bible quote image of the day.",
+            "All", "", "Get the bible quote of the day.",
             "All", "r", "Gets a random bible quote image.",
             "All", "[1-366]", "Gets a bible quote image from that number."]
 }

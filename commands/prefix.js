@@ -16,6 +16,6 @@ module.exports.config = {
     command: ["prefix", "pref", "pre", "px"],
     permlvl: "Admin",
     help: ["Admin", "Set the current prefix.",
-            "Admin", "", "Send the current prefix in the chat. Quite unneeded.",
-            "Admin", "[new-prefix]", "Set the server prefix to that."]
+            "Admin", "", "Sends the DooshBot prefix.",
+            "Admin", "[new-prefix]", "Set a new DooshBot server prefix"]
 }

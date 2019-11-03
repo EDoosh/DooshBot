@@ -30,6 +30,6 @@ module.exports.run = async (bot, message, args) => {
 module.exports.config = {
     command: ["unban", "ub"],
     permlvl: "Admin",
-    help: ["Admin", "Unban a user for a specified reason.",
-            "Admin", "[userID] (reason)", "Unban a user by their userID. If a reason is specified, that is used in the logchannel."]
+    help: ["Admin", "Unban a user.",
+            "Admin", "[userID] (reason)", "Unban a user. If a reason is provided, it is used in the Log Channel."]
 }

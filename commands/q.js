@@ -43,11 +43,9 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.config = {
-    command: ["q", "gq", "gquote", "getquote"],
+    command: ["getquote", "q", "gq", "gquote"],
     permlvl: "All",
     help: ["Fun", "Get a quote.",
-            "All", "", "Get a random server quote.",
-            "All", "[quoteID]", "Get that server quote ID.",
-            "All", "g", "Get a random global quote.",
-            "All", "g [globalQuoteID]", "Get that global quote ID."]
+            "All", "(g)", "Gets a random quote from the server, or globally if 'g' is added.",
+            "All", "(g) [quoteID]", "Get a specified quote from the server, or globally if 'g' is added."]
 }

@@ -110,9 +110,9 @@ module.exports.config = {
     command: ["lvl", "level"],
     permlvl: "All",
     help: ["Other", "Does stuff with the levels system.",
-            "All", "(g) (mention | userID | username)", "Gets your own level and rank. If the 'g' modifier is added, it gets your global level and rank. If a user is specified, it gets their level and rank.",
-            "All", "(g) top (page no.)", "Gets the top 10. If the 'g' modifier is added, it gets the global top 10.",
-            "Admin", "clear (mention | userID | username)", "Clears the entire server's levels. If a user is specified, it only clears theirs."],
+            "All", "(g) (userRepresentable)", "Get your own or another users server level and rank. If 'g' is added, it gets the global level data.",
+            "All", "(g) top (pg#)", "Gets the leaderboard. If the 'g' modifier is added, it gets the global leaderboard.",
+            "Admin", "clear (userRepresentable)", "Clears the entire server's levels. If a user is specified, it only clears theirs."],
     helpg: ""
 }
 

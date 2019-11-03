@@ -33,10 +33,10 @@ module.exports.run = async (bot, message, args) => {
 module.exports.config = {
     command: ["xkcd"],
     permlvl: "All",
-    help: ["Fun", "Get an XKCD comic.",
-            "All", "", "Get the most recent XKCD",
-            "All", "[number]", "Get that specific XKCD",
-            "All", "r", "Get a random XKCD"],
+    help: ["Fun", "Get an xkcd comic.",
+            "All", "", "Get the most recent xkcd.",
+            "All", "[number]", "Get that specific xkcd.",
+            "All", "r", "Get a random xkcd."],
     helpg: ""
 }
 

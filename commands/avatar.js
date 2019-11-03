@@ -25,5 +25,5 @@ module.exports.config = {
     permlvl: "All",
     help: ["Fun", "Get the avatar of a user.",
             "All", "", "Get your own avatar.",
-            "All", "[mention | userID | username]", "Get the avatar of that user."]
+            "All", "[userRepresentable]", "Get the avatar of another user."]
 }

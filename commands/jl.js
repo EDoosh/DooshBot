@@ -236,13 +236,13 @@ module.exports.config = {
     command: ["jl", "joinleave"],
     permlvl: "Admin",
     help: ["Admin", "Sets the join and leave messages and roles",
-            "Admin", "h", "Shows the help screen for when your making a new join/leave message.",
-            "Admin", "[b | m] ar", "Lists all the roles that are given to a bot or member on join.",
-            "Admin", "[b | m] ar [role-name | role-id]", "Sets the autorole for when a bot or member joins. Similarly to modrole and adminrole, there can be more than one role.",
-            "Admin", "[b | m] [j | l]", "Lists all the messages on the server that are sent when a bot or member joins/leaves.",
-            "Admin", "[b | m] [j | l] [channelID | channelMention | channelName]", "Lists all the messages in the channel that are sent when a bot or member joins/leaves.",
-            "Admin", "[b | m] [j | l] [channelID | channelMention | channelName] [0-9] [message]", "Creates a new message that will be sent to the channel when a bot or member joins/leaves the server.\nIf the number is 0, the message will always send. If it is from 1 to 9, it will randomize the message sent for each member.",
-            "Admin", "[b | m] [j | l] [ID]", "Removes that join message from the server."],
+            "Admin", "h", "Shows the help screen for joinleave, as there is a lot to it.",
+            "Admin", "[b | m] ar", "List all the roles given to a bot or member on join.",
+            "Admin", "[b | m] ar [roleRepresentable]", "Add an auto-role for bots or members. Removes if it's already in the list.",
+            "Admin", "[b | m] [j | l]", "List all the messages on the server that are sent when a bot or member joins/leaves.",
+            "Admin", "[b | m] [j | l] [channelRepresentable]", "List all the messages in the channel that are sent whena  bot or member joins/leaves.",
+            "Admin", "[b | m] [j | l] [channelRepresentable] [0-9] [message]", "Creates a new message that will be sent to the channe when a bot or member joins/leaves. If the number is 0, it will always send. Otherwise, it will randomize out of all of the ones with the same number which to send.",
+            "Admin", "[b | m] [j | l] [jlID]", "Removes a message from the server by its JL ID."],
     helpg: "[help | b | m] [ar | j | l]"
 }
 

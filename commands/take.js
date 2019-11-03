@@ -16,7 +16,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.config = {
     command: ["take"],
     permlvl: "All",
-    help: ["Fun", "Take it.",
-            "All", "", "Take it. If it has been taken from you, the bot sends you a message.",
+    help: ["Fun", "Take it. A tiny game of reverse tag.",
+            "All", "", "Take it. When taken from you, the bot will notify.",
             "All", "g", "Get the current person with it."]
 }

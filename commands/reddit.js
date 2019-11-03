@@ -41,5 +41,5 @@ module.exports.config = {
     command: ["reddit"],
     permlvl: "All",
     help: ["Fun", "Get a post from reddit.",
-            "All", "[subreddit] (query-limit)", "Get a random post from a specified subreddit. If you don't know what query-limit is, leave it blank."]
+            "All", "[subreddit] (query-limit)", "Get a random post from a specified subreddit. Ignore query-limit if you don't know what it does."]
 }
